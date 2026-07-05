@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>원석의 작은 도서관 · Wonseok's Library</title>
+<meta name="description" content="리서치와 분석 산출물을 모아두는 개인 도서관.">
+<style>
+  :root{
+    --bg:#f0f2f5; --card:#ffffff; --ink:#1f2733; --muted:#6b7684;
+    --line:#e4e8ee; --accent:#1a73e8; --accent-soft:#e8f0fe;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+    --shadow-hover:0 4px 8px rgba(16,24,40,.08),0 18px 40px rgba(26,115,232,.16);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Malgun Gothic","맑은 고딕",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink); background:var(--bg);
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 20px}
+
+  /* Hero */
+  header{
+    padding:72px 0 40px; text-align:center;
+    background:
+      radial-gradient(1200px 400px at 50% -120px, var(--accent-soft), transparent 70%);
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:13px; font-weight:600; letter-spacing:.02em;
+    color:var(--accent); background:var(--accent-soft);
+    padding:6px 14px; border-radius:999px; margin-bottom:22px;
+  }
+  h1{
+    font-size:clamp(30px,6vw,46px); font-weight:800; letter-spacing:-.02em;
+    margin:0 0 12px; line-height:1.15;
+  }
+  h1 .en{display:block; font-size:.42em; font-weight:600; color:var(--muted); letter-spacing:.06em; margin-top:10px}
+  .lede{font-size:16px; color:var(--muted); max-width:520px; margin:0 auto}
+
+  /* Grid */
+  main{padding:36px 0 20px}
+  .shelf-label{
+    display:flex; align-items:center; gap:12px;
+    font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 18px;
+  }
+  .shelf-label::after{content:""; flex:1; height:1px; background:var(--line)}
+  .grid{
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  }
+  .card{
+    position:relative; display:flex; flex-direction:column;
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px 24px 22px; text-decoration:none; color:inherit;
+    box-shadow:var(--shadow);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--spine,var(--accent)); opacity:.9;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:var(--shadow-hover); border-color:#d5deec}
+  .card-emoji{font-size:30px; line-height:1; margin-bottom:14px}
+  .card h3{margin:0 0 8px; font-size:19px; font-weight:750; letter-spacing:-.01em}
+  .card p{margin:0 0 16px; font-size:14px; color:var(--muted); flex:1}
+  .card-foot{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .tags{display:flex; flex-wrap:wrap; gap:6px}
+  .tag{
+    font-size:11.5px; font-weight:600; color:var(--muted);
+    background:#f2f4f7; border-radius:6px; padding:3px 8px;
+  }
+  .go{
+    font-size:13px; font-weight:700; color:var(--accent);
+    display:inline-flex; align-items:center; gap:4px; white-space:nowrap;
+  }
+  .go svg{transition:transform .18s ease}
+  .card:hover .go svg{transform:translateX(3px)}
+
+  /* Footer */
+  footer{
+    text-align:center; color:var(--muted); font-size:13px;
+    padding:44px 0 56px; margin-top:24px;
+    border-top:1px solid var(--line);
+  }
+  footer a{color:var(--muted); text-decoration:none; border-bottom:1px dotted #c4ccd6}
+  footer a:hover{color:var(--accent); border-color:var(--accent)}
+  .dot{margin:0 8px; opacity:.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="badge">📚 personal research library</span>
+    <h1>원석의 작은 도서관<span class="en">WONSEOK'S LITTLE LIBRARY</span></h1>
+    <p class="lede">리서치와 분석으로 나온 것들을 한 칸에 모아두는 곳. PC에서든 폰에서든 언제든 꺼내 봅니다.</p>
+  </header>
+
+  <main>
+    <div class="shelf-label">Shelf · 서가</div>
+    <div class="grid">
+
+      <a class="card" style="--spine:#1a73e8" href="https://yesman9692.github.io/perth-lookbook/">
+        <div class="card-emoji">🏡</div>
+        <h3>Perth Lookbook</h3>
+        <p>퍼스 렌트 매물을 조건별로 선별해 카드·지도로 훑어보는 룩북. 통근·바닥재·지역까지 한눈에.</p>
+        <div class="card-foot">
+          <div class="tags"><span class="tag">호주</span><span class="tag">부동산</span><span class="tag">렌트</span></div>
+          <span class="go">열기<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+
+      <a class="card" style="--spine:#0f9d58" href="https://yesman9692.github.io/global-housing-pir/">
+        <div class="card-emoji">🌏</div>
+        <h3>Global Housing &amp; PIR</h3>
+        <p>세계 39개 도시의 주거비와 소득 대비 집값(PIR)을 방법론까지 맞춰 비교한 리포트.</p>
+        <div class="card-foot">
+          <div class="tags"><span class="tag">주거비</span><span class="tag">39개 도시</span><span class="tag">데이터</span></div>
+          <span class="go">열기<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+
+      <a class="card" style="--spine:#e8710a" href="https://yesman9692.github.io/korean-air-card-calculator/">
+        <div class="card-emoji">💳</div>
+        <h3>대한항공 카드 계산기</h3>
+        <p>the First Edition2 vs 캐시백·트래블 카드. 슬라이더로 소비를 넣으면 손익이 바로 갈립니다.</p>
+        <div class="card-foot">
+          <div class="tags"><span class="tag">인터랙티브</span><span class="tag">카드 손익</span><span class="tag">마일리지</span></div>
+          <span class="go">열기<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    made by <a href="https://github.com/yesman9692">@yesman9692</a>
+    <span class="dot">·</span> hosted on GitHub Pages
+    <span class="dot">·</span> 새 산출물이 나오면 서가에 한 권씩 늘어납니다
+  </footer>
+
+</div>
+</body>
+</html>
