@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>호주 vs NZ 성공 확률 계산기</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#f0f2f5;font-family:"Malgun Gothic","맑은 고딕",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202124;line-height:1.6;padding:12px 12px 60px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:1.35rem;margin:6px 0 2px}
+  .sub{font-size:.78rem;color:#5f6368;margin-bottom:14px}
+  .card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(60,64,67,.15)}
+  h2{font-size:1.02rem;margin:0 0 4px;color:#1a73e8;display:flex;align-items:center;gap:6px}
+  h2 .n{background:#1a73e8;color:#fff;border-radius:5px;font-size:.72rem;padding:2px 7px;font-weight:700}
+  .hint{font-size:.76rem;color:#5f6368;margin:0 0 12px}
+
+  /* 결과 */
+  .res{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rbox{border-radius:10px;padding:13px 11px;text-align:center}
+  .rA{background:#e8f0fe;border:2px solid #1a73e8}
+  .rB{background:#e6f4ea;border:2px solid #188038}
+  .rlab{font-size:.75rem;font-weight:700;letter-spacing:-.2px}
+  .rA .rlab{color:#1558d6}.rB .rlab{color:#137333}
+  .rbig{font-size:2.15rem;font-weight:800;line-height:1.15;margin:3px 0}
+  .rA .rbig{color:#1558d6}.rB .rbig{color:#137333}
+  .rrange{font-size:.7rem;color:#5f6368}
+  .tiers{margin-top:12px;border-top:1px solid #e8eaed;padding-top:10px}
+  .trow{display:grid;grid-template-columns:1fr 62px 62px;gap:6px;align-items:center;font-size:.81rem;padding:7px 0;border-bottom:1px solid #f1f3f4}
+  .trow:last-child{border-bottom:none}
+  .trow .tl{color:#3c4043}
+  .trow b{text-align:right;font-variant-numeric:tabular-nums;font-size:.94rem}
+  .va{color:#1558d6}.vb{color:#137333}
+  .thead{font-size:.68rem;color:#80868b;font-weight:700;text-align:right}
+  .star{background:#fef7e0;margin:0 -8px;padding:7px 8px;border-radius:6px}
+  .verdict{margin-top:12px;background:#f8f9fa;border-left:4px solid #1a73e8;padding:10px 12px;border-radius:0 8px 8px 0;font-size:.84rem}
+  .verdict b{color:#1558d6}
+
+  /* 프리셋 */
+  .pre{display:flex;flex-wrap:wrap;gap:7px}
+  .pre button{flex:1 1 auto;min-width:88px;min-height:40px;border:1.5px solid #dadce0;background:#fff;border-radius:20px;padding:8px 13px;font-size:.79rem;font-family:inherit;cursor:pointer;color:#3c4043;font-weight:600}
+  .pre button:active{background:#e8f0fe}
+  .pre button.on{background:#1a73e8;border-color:#1a73e8;color:#fff}
+  .pre button.warn{border-color:#f9ab00;color:#b06000}
+  .pre button.warn.on{background:#f29900;border-color:#f29900;color:#fff}
+
+  /* 토글 */
+  .tg{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #f1f3f4}
+  .tg:last-of-type{border-bottom:none}
+  .tgt{font-size:.85rem;font-weight:600}
+  .tgd{font-size:.72rem;color:#5f6368;margin-top:1px}
+  .sw{position:relative;width:48px;height:27px;flex:0 0 48px;margin-left:10px}
+  .sw input{opacity:0;width:0;height:0;position:absolute}
+  .sl{position:absolute;inset:0;background:#bdc1c6;border-radius:27px;transition:.2s;cursor:pointer}
+  .sl:before{content:"";position:absolute;height:21px;width:21px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .sw input:checked+.sl{background:#1a73e8}
+  .sw input:checked+.sl:before{transform:translateX(21px)}
+
+  /* 슬라이더 */
+  .v{padding:12px 0;border-bottom:1px solid #f1f3f4}
+  .v:last-child{border-bottom:none}
+  .vh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:3px}
+  .vn{font-size:.85rem;font-weight:600;flex:1}
+  .vv{font-size:1.02rem;font-weight:800;color:#1a73e8;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .vd{font-size:.72rem;color:#5f6368;margin-bottom:8px}
+  .tag{display:inline-block;font-size:.63rem;padding:1px 5px;border-radius:3px;font-weight:700;vertical-align:1px;margin-right:4px}
+  .t-m{background:#e6f4ea;color:#137333}
+  .t-e{background:#e8f0fe;color:#1558d6}
+  .t-j{background:#fce8e6;color:#c5221f}
+  input[type=range]{-webkit-appearance:none;width:100%;height:30px;background:transparent;margin:0;display:block}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;background:#dadce0;border-radius:3px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;background:#1a73e8;border-radius:50%;margin-top:-10.5px;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+  input[type=range]::-moz-range-track{height:5px;background:#dadce0;border-radius:3px}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;background:#1a73e8;border:none;border-radius:50%;cursor:pointer}
+  .bnd{display:flex;justify-content:space-between;font-size:.67rem;color:#9aa0a6;margin-top:-2px}
+
+  /* 민감도 */
+  .tor{font-size:.8rem}
+  .tr2{margin-bottom:9px}
+  .trh{display:flex;justify-content:space-between;margin-bottom:2px}
+  .trn{font-weight:600}
+  .trv{color:#5f6368;font-variant-numeric:tabular-nums;font-size:.75rem}
+  .bar{height:19px;background:#f1f3f4;border-radius:4px;position:relative;overflow:hidden}
+  .bar i{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,#1a73e8,#4285f4);border-radius:4px}
+  .bar .mid{position:absolute;top:0;bottom:0;width:2px;background:#80868b;left:0}
+  .lg{font-size:.72rem;color:#5f6368;margin-top:10px;padding-top:9px;border-top:1px solid #f1f3f4}
+
+  details{margin-top:10px}
+  summary{font-size:.82rem;font-weight:600;color:#1a73e8;cursor:pointer;padding:7px 0}
+  .fn{font-size:.75rem;color:#5f6368}
+  .fn li{margin-bottom:7px}
+  .warnbox{background:#fef7e0;border:1px solid #f9ab00;border-radius:8px;padding:11px 13px;font-size:.78rem;color:#5f4200}
+  .warnbox b{color:#b06000}
+  code{background:#f1f3f4;padding:1px 5px;border-radius:3px;font-size:.92em}
+  .fbtn{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#202124;color:#fff;border:none;border-radius:22px;padding:11px 22px;font-size:.82rem;font-family:inherit;font-weight:600;box-shadow:0 3px 10px rgba(0,0,0,.3);cursor:pointer;z-index:50}
+  @media(max-width:420px){.rbig{font-size:1.85rem}h1{font-size:1.2rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>호주 vs NZ 성공 확률 계산기</h1>
+  <div class="sub">기준 <b>2026-09-22</b> · 정본 <code>docs/확률모델-호주vsNZ-2026-09-22.md</code> · 슬라이더를 직접 움직여 보세요</div>
+
+  <!-- 결과 -->
+  <div class="card">
+    <div class="res">
+      <div class="rbox rA">
+        <div class="rlab">🇦🇺 A 호주 직행</div>
+        <div class="rbig" id="oA">–</div>
+        <div class="rrange" id="oAr"></div>
+      </div>
+      <div class="rbox rB">
+        <div class="rlab">🇳🇿 B NZ 경유</div>
+        <div class="rbig" id="oB">–</div>
+        <div class="rrange" id="oBr"></div>
+      </div>
+    </div>
+
+    <div class="tiers">
+      <div class="trow">
+        <div class="tl" style="font-size:.7rem;color:#80868b;font-weight:700">성공 정의 층위</div>
+        <div class="thead">호주</div><div class="thead">NZ</div>
+      </div>
+      <div class="trow">
+        <div class="tl">① 원석 단독 영주 자격</div>
+        <b class="va" id="a1">–</b><b class="vb" id="b1">–</b>
+      </div>
+      <div class="trow star">
+        <div class="tl"><b>② 부부 최종 동반 정착</b><br><span style="font-size:.7rem;color:#80868b">정본 비교행 — 중간 공백 허용</span></div>
+        <b class="va" id="a2">–</b><b class="vb" id="b2">–</b>
+      </div>
+      <div class="trow">
+        <div class="tl"><b>③ 부부 무중단 동반</b><br><span style="font-size:.7rem;color:#80868b">하연이 처음부터 끝까지 함께</span></div>
+        <b class="va" id="a3">–</b><b class="vb" id="b3">–</b>
+      </div>
+      <div class="trow">
+        <div class="tl" style="color:#80868b">(참고) 호주 거주 가능 시점</div>
+        <b class="va" style="font-size:.78rem">2031~32</b><b class="vb" style="font-size:.78rem" id="bplus">–</b>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <!-- 프리셋 -->
+  <div class="card">
+    <h2><span class="n">1</span>시나리오</h2>
+    <p class="hint">기본값은 정본의 중립 판단입니다. 트리거(주황)는 정본 §5-2가 정의한 "판정을 뒤집는 조건"입니다.</p>
+    <div class="pre" id="pre">
+      <button data-p="base" class="on">중립 (기본)</button>
+      <button data-p="opt">낙관</button>
+      <button data-p="pes">비관</button>
+      <button data-p="t1" class="warn">트리거: 하연 동반 거절</button>
+      <button data-p="t2" class="warn">트리거: WA ICT 또 비우선</button>
+      <button data-p="t3" class="warn">트리거: 기술이민·482 동시 붕괴</button>
+    </div>
+  </div>
+
+  <!-- 토글 -->
+  <div class="card">
+    <h2><span class="n">2</span>내 선택 (민감도가 뒤집은 우선순위)</h2>
+    <p class="hint">이 두 개가 정본에서 등급이 갈린 항목입니다. 켜고 끄면서 숫자가 얼마나 움직이는지 보세요.</p>
+    <div class="tg">
+      <div>
+        <div class="tgt">PTE Superior 확보</div>
+        <div class="tgd">끄면 기술이민 초청 0.30→0.10, 취업 0.78→0.65. <b>두 군데에 동시 작동</b> — NZ도 단일 실패점이 취업이라 어느 분기든 값이 유지되는 유일한 투자</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="tgSup" checked><span class="sl"></span></label>
+    </div>
+    <div class="tg">
+      <div>
+        <div class="tgt">NAATI 취득</div>
+        <div class="tgd">켜도 기술이민 초청이 0.30→0.33뿐. <b>컷 100점인 문의 초청이 18개월간 0회</b> — 열리지 않은 문의 컷오프는 5점으로 안 움직인다</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="tgNaati"><span class="sl"></span></label>
+    </div>
+  </div>
+
+  <!-- A 변수 -->
+  <div class="card">
+    <h2><span class="n">3</span>🇦🇺 호주 직행 변수</h2>
+    <p class="hint">
+      <span class="tag t-m">실측</span>정부·기관 1차소스
+      <span class="tag t-e">추정</span>1차소스에서 산술 유도
+      <span class="tag t-j">판단</span>1차소스 아님 — <b>여기를 움직이세요</b>
+    </p>
+    <div id="varsA"></div>
+  </div>
+
+  <!-- 상관 -->
+  <div class="card">
+    <h2><span class="n">4</span>영주권 3문의 상관 정도</h2>
+    <p class="hint">세 문(기술이민·482·하연폴백)이 서로 독립인지, 하나의 정책 충격에 같이 닫히는지. <b>이 슬라이더가 A의 결과를 가장 크게 흔듭니다.</b></p>
+    <div id="varsR"></div>
+    <div class="lg" id="corrNote"></div>
+  </div>
+
+  <!-- B 변수 -->
+  <div class="card">
+    <h2><span class="n">5</span>🇳🇿 NZ 경유 변수</h2>
+    <div id="varsB"></div>
+  </div>
+
+  <!-- 민감도 -->
+  <div class="card">
+    <h2><span class="n">6</span>민감도 — 이게 진짜 산출물</h2>
+    <p class="hint">각 변수를 하한~상한까지 움직였을 때 <b id="senTargetLabel">② 부부 최종 동반</b> 확률이 흔들리는 폭. 막대가 길수록 그 변수가 결과를 지배합니다.</p>
+    <div class="pre" style="margin-bottom:13px" id="senPick">
+      <button data-s="2" class="on">② 부부 동반 기준</button>
+      <button data-s="1">① 원석 단독 기준</button>
+      <button data-s="3">③ 무중단 기준</button>
+    </div>
+    <div class="tor" id="tornado"></div>
+    <div class="lg">막대 안 회색 선 = 현재값 위치. <b>A는 한 변수가 죽어도 버티고, B는 단일 실패점 하나가 전체를 끌고 내려갑니다</b> — 이게 "두꺼운 불확실 3장 vs 얇은 확실 1장"의 실측 형태입니다.</div>
+  </div>
+
+  <!-- 한계 -->
+  <div class="card">
+    <h2><span class="n">7</span>이 계산기를 믿지 말아야 하는 지점</h2>
+    <div class="warnbox">
+      <b>최종 퍼센트는 전부 판단값입니다.</b> 특히 <b>기술이민 초청(0.30) · 482 스폰서(0.50) · NZ 잡오퍼(0.58)</b> 이 셋이 결과를 지배하는데 <b>세 개 모두 1차소스가 없습니다.</b> 구간 하단을 쓰면 양쪽 다 3분의 1 이하로 내려갑니다.
+      <br><br>
+      나는 <b>MARA 등록 이민 에이전트가 아니고 유학원도 아닙니다.</b> 동반 제한 시행령이 관보에 오르면 카일 법무사(MARN 1574101) 확인이 필요합니다.
+    </div>
+    <details>
+      <summary>▸ 왜 ②가 정본 비교행인가 / 나머지 한계 5건</summary>
+      <ul class="fn">
+        <li><b>①(원석 단독)을 헤드라인으로 보면 논점이 묻힙니다.</b> B는 ①과 ②의 차이가 3pp뿐인데, 이는 <b>NZ에서 하연을 데려가는 비용이 거의 0</b>이라는 뜻입니다(PSWV가 학업 전 구간을 덮음). 호주는 하연 노드가 <b>둘</b>(500 동반·485 구간)이라 ①→③에서 크게 내려앉습니다.</li>
+        <li><b>261313의 NZ SMC 실적은 확인 불가</b> — 직종 교차표가 없고 직종통계 커버율이 0.6~2.8%로 붕괴. NZ 잡오퍼 값은 직종 단위 데이터 없이 매긴 것입니다.</li>
+        <li><b>B의 "경쟁 없음"은 신청 접수 이후 단계까지만 검증</b>됐습니다 — EOI 제출·선정 물량은 미공개.</li>
+        <li><b>호주 2030년 이후는 재무부 전망 밖</b>입니다(전망 지평이 2028-29에서 끝남). 원석 창(2029~2032)의 후반은 데이터가 없습니다.</li>
+        <li><b>재무부는 근년 순이민을 +55,000 빗나갔습니다</b> — 전망치 정확도도 그만큼 흔들립니다. 단 빗나감의 방향은 "통제 실패"였지 "정책 완화"가 아니었습니다.</li>
+        <li><b>하연 의사는 "둘 다 상관없어"</b>입니다. 이 모델은 선호를 확률로 환산하지 않았습니다 — <b>41% vs 46%는 선호 앞에서 무의미한 차이</b>입니다.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>▸ 두 결론이 반대를 가리킬 때의 서열</summary>
+      <div class="fn" style="padding:4px 0 8px">
+        <p><b>동반 격차(NZ 우위)는 기간 한정 리스크</b>입니다 — 취약 구간이 2029~2031이고, <b>482 조기 확보 또는 하연 본인 비자로 해소 가능</b>하며, 원석이 영주권을 잡으면 하연은 파트너 비자로 합류합니다(동반 제한과 다른 제도라 패키지 대상 아님).</p>
+        <p><b>충격 흡수력(호주 우위)은 창 전체에 걸친 구조적 속성</b>입니다 — 해소할 방법이 없고 경로 설계에서 나옵니다.</p>
+        <p>→ <b>구조적 속성이 기간 한정 리스크보다 무겁습니다.</b> 단 <i>"하연이 2029~2031에 떨어져 있는 것을 받아들일 수 있는가"</i>는 확률이 아니라 <b>선호</b>이고, 답이 "받아들일 수 없다"면 서열이 역전됩니다. 🔒 모델이 정할 수 없는 지점이고, 두 사람이 정할 몫입니다.</p>
+      </div>
+    </details>
+  </div>
+
+</div>
+<button class="fbtn" id="reset">초기값으로 되돌리기</button>
+
+<script>
+"use strict";
+
+var A_VARS = [
+  {k:"s0a", n:"원석 학생비자 500 grant", t:"m", v:.97, lo:.90, hi:.995,
+   d:"2026년 7월 한국×고등교육×해외×주신청자 승인율 <b>98.5%</b>(133건/거절2, 원자료 직접 파싱). 자금은 공식 최소의 <b>2.7배</b> 파킹. 거절률 급등 원인이 장관 발언으로 '자산 심사 강화'임이 확인됐고 원석은 그 영역을 초과 충족."},
+  {k:"s0b", n:"하연 500 동반 grant", t:"j", v:.80, lo:.30, hi:.95,
+   d:"🔴 <b>A의 급소.</b> 유리 = 경과규정 선례가 <b>2:0으로 신청일(lodge) 기준</b>, 2026-09-11 lodge 완료. 불리 = 시행일·경과규정이 <b>정부 1차 문서 5종에 0건</b>이고, 예외 기준 <code>logically going to be older</code>에서 <b>코스워크 석사는 불리</b>."},
+  {k:"s1", n:"석사 졸업", t:"j", v:.95, lo:.85, hi:.99,
+   d:"5년 실경력 + 학업 의지. 실질 리스크는 학력이 아니라 <b>482 병행 구직에 시간을 쏟다 조건 8202 진도 요건이 깨지는 것</b> — 정본이 이 전략의 '유일한 실질 비용'으로 명시."},
+  {k:"s2", n:"원석 485 취득", t:"j", v:.95, lo:.85, hi:.99,
+   d:"2028-12 졸업 시 <b>만 32세</b>, 485 상한 35세로 여유. 2025-26 Post-HE 발급 <b>79,225건</b> = 구조적으로 열려 있음."},
+  {k:"s2b", n:"485 구간(2029~31) 하연 체류 커버", t:"j", v:.67, lo:.20, hi:.95,
+   d:"🔴 <b>485 동반 제한은 2026-09-18 연설 전문으로 공식 확정</b> — '발표될까'가 아니라 2029년엔 이미 시행 중이 기본값. 직접 동반 ≈0.45, 폴백 = ①500→485 승계 조항(미확인) ②하연 본인 학생비자 ③417 잔여(현실 2년)."},
+  {k:"s3", n:"원석 호주 개발자 취업", t:"j", v:.78, lo:.45, hi:.92,
+   d:"⚠️ 졸업생 임시비자 소지자 중 학사급 직종 고용은 <b>38.6%</b>인데 이 값은 그 두 배. 상향 근거 = 신졸 아닌 <b>5년 실경력</b>·이중 학력·<b>WA는 구인공고가 증가한 단 2개 주(+1.3%)</b>·프로필이 퍼스 광산·금융 플랫폼 수요 직결·<b>시도 창 2~3년</b>. 하향 = ICT 공고 −13.1%·485 풀 19.7만·영어 장벽."},
+  {k:"g1", n:"문1 · 기술이민 190/491 초청", t:"j", v:.30, lo:0, hi:.70,
+   d:"🔴 <b>261313은 FY2025-26 내내 WA·연방 양쪽에서 초청 0회.</b> 마지막이 2025-03 <b>컷 100점</b>, WA 우선섹터 5개에 ICT 미포함(최광범위 115개 직종 라운드에서도 0건), 491 쿼터 <b>−57.2%</b>. 완화 = 빠진 게 아니라 '등재됐으나 비우선'이라 WA가 ICT를 우선섹터에 넣으면 즉시 유효 + 창 3~4년."},
+  {k:"g2c", n:"문2 · 482 스폰서 확보 (취업 성공 조건부)", t:"j", v:.50, lo:.10, hi:.80,
+   d:"유리 = 고용주 스폰서 쿼터 <b>+31.9%(58,040석)</b>·261313 CSOL 등재 <b>caveat 없음</b>(법령 item 248)·186 전환 재직 <b>2년</b>·온쇼어라 처리 2순위·중도 노미네이션은 <b>합법이고 표준</b>. 불리 = 신청 주체가 고용주, SAF <b>$4,800~7,200 선납·직원 전가 금지</b>.<br>⭐ <b>482 동반은 제한 패키지 대상이 아니다</b> → 이 문은 동반 문제의 해답도 겸한다."},
+  {k:"g3", n:"문3 · 하연 파티쉐 폴백", t:"j", v:.10, lo:0, hi:.35,
+   d:"WA 190/491 열려 있고 2026-03 컷 80점. 🔴 병목 = <b>482 최저연봉 79,423 vs 파티쉐 Award 58,193</b>로 임금이 문턱 미달. ⛔ 원석 지시 '폴백에 무게 싣지 말 것'."},
+  {k:"pj", n:"영주권 확보 후 하연 합류", t:"j", v:.90, lo:.70, hi:.99,
+   d:"<b>원석이 영주권을 잡으면 하연은 배우자 파트너 비자로 합류한다. 학생·485 동반 제한과 전혀 다른 제도이고 패키지 대상이 아니다.</b> 즉 A의 하연 리스크는 '영영 못 온다'가 아니라 '2029~2031에 떨어져 있을 수 있다'가 정확한 서술."}
+];
+
+var R_VARS = [
+  {k:"rho", n:"상관계수 ρ", t:"j", v:.42, lo:0, hi:1,
+   d:"<b>0 = 완전 독립</b>(세 문이 서로 무관) ~ <b>1 = 완전 상관</b>(하나의 충격이 셋을 동시에 닫음).<br>기본 0.42는 독립 쪽 가중 = 정본이 <i>'기술이민 문턱은 단방향, 고용주 스폰서 채널은 양방향(현재 완화)'</i>으로 판정하고 그것이 <b>491 −57% ↔ 482 +32%라는 정부 표 하나로 실증</b>되기 때문. 두 채널은 실제로 반대로 움직인 이력이 있어 음의 상관 성분이 있다. 또 <b>문1 실패 → 현지 경력 축적 → 문2 상승</b>의 경로 의존도 있다."}
+];
+
+var B_VARS = [
+  {k:"n1", n:"NZ 석사 입학·졸업", t:"j", v:.93, lo:.80, hi:.99,
+   d:"Massey/AUT 영어요건 <b>Overall 58</b>, 원석 PTE <b>70</b>으로 충족. 예치금 제도 없고 Massey는 비자 거절 시 전액 환불 명문. ⚠️영역별 50+ 여부·<b>센터 응시분인지</b> 미확인(AUT는 온라인 PTE 불인정)."},
+  {k:"n1b", n:"하연 학생 파트너 워크비자(PSWV)", t:"m", v:.95, lo:.80, hi:.99,
+   d:"⭐ <b>B의 최대 강점.</b> 오픈 워크라이트, <b>잡오퍼 불요</b>, 80%가 5주, 승인율 <b>98.6%</b>. 파트너가 Level 9(석사) 과정이면 자격. 호주의 하연 노드 둘(0.80·0.67)과 정면 대비되는 지점."},
+  {k:"n2", n:"졸업 후 공인 고용주 잡오퍼", t:"j", v:.58, lo:.20, hi:.85,
+   d:"⛔ <b>단일 실패점.</b> 원문상 <code>employer who is accredited</code>가 3경로 공통 요건. 공인 고용주 풀 약 30,000이나 <b>취소 1,641·정지 1,049 = 개별 제재 위험 연 4%</b>. 🔴 결정적 반증 = <b>261313 취업비자 발급 밀도가 인구 1만명당 NZ 0.51 vs 호주 0.54로 사실상 동일</b> — 고용주 비용이 3~5배 싼데 문의 폭이 같다 = <b>비용은 병목이 아니었다.</b> 오클랜드 IT 공인 고용주 수는 미측정."},
+  {k:"n3", n:"SMC 6점 충족 + 승인", t:"m", v:.90, lo:.75, hi:.98,
+   d:"<b>NZ 석사(NZ 내 30주+ 풀타임) = 6점 단독 충족</b>, 학사 보유 필요 → 원석 CS 학사 있음. 승인율 <b>93.8%</b>, 47근무일, <b>경쟁 풀 없는 고정 문턱</b>. 2026-08-24 red/amber 리스트는 <b>자격 경로를 막지 않는다</b>(INZ 원문 확인) — 타격 대상은 학위 없이 경력만으로 노리던 사람."},
+  {k:"nc", n:"(참고) 5년 붙박이 → NZ 시민권", t:"j", v:.85, lo:.50, hi:.98,
+   d:"NZ 시민권 = 5년 resident + 각 12개월 240일 + 총 1,350일. 순수 거주 요건이라 확률은 높으나 <b>5년을 붙박이로 살아야</b> 하고 그 사이 마음이 바뀔 수 있다. 이게 충족되면 호주 SCV가 열린다 — 시점 <b>2034~35(만 38~39세)</b>."}
+];
+
+var ALL = A_VARS.concat(R_VARS, B_VARS);
+var S = {};
+var DEF = {};
+ALL.forEach(function(x){ S[x.k] = x.v; DEF[x.k] = x.v; });
+
+var senTier = 2;
+
+/* ---------- 모델 ---------- */
+function gates(g1, g2, g3, rho){
+  var ind = 1 - (1-g1)*(1-g2)*(1-g3);
+  var cor = Math.max(g1, g2, g3);
+  return { p:(1-rho)*ind + rho*cor, ind:ind, cor:cor };
+}
+function model(s){
+  var g2 = s.s3 * s.g2c;                       // 482는 취업 조건부
+  var G  = gates(s.g1, g2, s.g3, s.rho);
+  var serial = s.s0a * s.s1 * s.s2;
+
+  var a1 = serial * G.p;
+  var a2 = a1 * s.pj;
+  var a3 = s.s0a * s.s0b * s.s1 * s.s2 * s.s2b * G.p;
+
+  var b1 = s.n1 * s.n2 * s.n3;
+  var b2 = s.n1 * s.n1b * s.n2 * s.n3;
+  var b3 = b2;                                  // PSWV가 전 구간 커버 → ②=③
+  var bp = b2 * s.nc;
+
+  return {a1:a1,a2:a2,a3:a3,b1:b1,b2:b2,b3:b3,bp:bp,G:G,g2:g2};
+}
+function pct(x){ return (x*100).toFixed(0) + "%"; }
+function pct1(x){ return (x*100).toFixed(1) + "%"; }
+
+/* 구간 — 정의를 명확히 한다.
+   ⛔ 모든 변수를 동시에 극단으로 밀면 "전부 동시에 최악" 코너값이 나와 무의미하게 넓어진다
+      (게다가 상관계수 rho는 방향이 반대다 — rho가 낮을수록 확률이 높다).
+   ✅ A는 구조적 불확실성의 정체가 '3문의 상관'이므로 rho를 1→0으로 훑는다.
+      B는 직렬 체인이라 상관 구조가 없고, 지배 변수가 잡오퍼 하나이므로 그것의 하한~상한을 훑는다. */
+function sweep(key, val){
+  var s = {}; for(var k in S) s[k] = S[k];
+  s[key] = val;
+  return model(s);
+}
+/* 잡오퍼의 '판단 구간'은 슬라이더 이동범위(20~85%)가 아니라 정본이 명시한 42~70%다.
+   슬라이더는 극단까지 밀어볼 수 있게 넓게 두고, 표시 구간은 판단 구간을 쓴다. */
+var N2_JLO = .42, N2_JHI = .70;
+function bounds(tier){
+  return {
+    aLo: sweep("rho", 1)["a"+tier],        // 완전 상관 = 하나의 충격이 3문을 동시에 닫음
+    aHi: sweep("rho", 0)["a"+tier],        // 완전 독립
+    bLo: sweep("n2", N2_JLO)["b"+tier],
+    bHi: sweep("n2", N2_JHI)["b"+tier]
+  };
+}
+
+/* ---------- 렌더 ---------- */
+function slider(x){
+  var tagTxt = x.t==="m" ? "실측" : (x.t==="e" ? "추정" : "판단");
+  return '<div class="v">'
+    + '<div class="vh"><div class="vn"><span class="tag t-'+x.t+'">'+tagTxt+'</span>'+x.n+'</div>'
+    + '<div class="vv" id="lab_'+x.k+'"></div></div>'
+    + '<div class="vd">'+x.d+'</div>'
+    + '<input type="range" id="in_'+x.k+'" min="'+Math.round(x.lo*100)+'" max="'+Math.round(x.hi*100)+'" step="1" value="'+Math.round(x.v*100)+'">'
+    + '<div class="bnd"><span>'+pct(x.lo)+'</span><span>'+pct(x.hi)+'</span></div>'
+    + '</div>';
+}
+document.getElementById("varsA").innerHTML = A_VARS.map(slider).join("");
+document.getElementById("varsR").innerHTML = R_VARS.map(slider).join("");
+document.getElementById("varsB").innerHTML = B_VARS.map(slider).join("");
+
+ALL.forEach(function(x){
+  document.getElementById("in_"+x.k).addEventListener("input", function(e){
+    S[x.k] = (+e.target.value)/100;
+    clearPreset();
+    render();
+  });
+});
+
+function clearPreset(){
+  var b = document.querySelectorAll("#pre button");
+  for(var i=0;i<b.length;i++) b[i].classList.remove("on");
+}
+
+function tornado(m){
+  var tier = senTier;
+  var cur = { a:m["a"+tier], b:m["b"+tier] };
+  var rows = [];
+
+  ALL.forEach(function(x){
+    var side = (["n1","n1b","n2","n3","nc"].indexOf(x.k) >= 0) ? "b" : "a";
+    var base = (side === "a") ? cur.a : cur.b;
+
+    var sLo = {}, sHi = {};
+    for(var k in S){ sLo[k]=S[k]; sHi[k]=S[k]; }
+    sLo[x.k] = x.lo; sHi[x.k] = x.hi;
+    var vLo = model(sLo)[side+tier];
+    var vHi = model(sHi)[side+tier];
+
+    // ③ 기준에서 B는 하연 노드가 없으므로 동일값 → 스윙 0인 항목 제외
+    var swing = Math.abs(vHi - vLo);
+    if(swing < 0.002) return;
+    rows.push({
+      n:(side==="a"?"🇦🇺 ":"🇳🇿 ")+x.n, lo:Math.min(vLo,vHi), hi:Math.max(vLo,vHi),
+      base:base, swing:swing, side:side
+    });
+  });
+
+  rows.sort(function(p,q){ return q.swing - p.swing; });
+  var maxS = rows.length ? rows[0].swing : 1;
+
+  var html = rows.map(function(r){
+    var w = (r.swing/maxS)*100;
+    var relPos = (r.base - r.lo) / (r.hi - r.lo || 1);
+    relPos = Math.max(0, Math.min(1, relPos));
+    return '<div class="tr2">'
+      + '<div class="trh"><span class="trn">'+r.n+'</span>'
+      + '<span class="trv">'+pct(r.lo)+' ~ '+pct(r.hi)+' <b style="color:#1a73e8">±'+(r.swing*100).toFixed(1)+'pp</b></span></div>'
+      + '<div class="bar"><i style="left:0;width:'+w.toFixed(1)+'%"></i>'
+      + '<span class="mid" style="left:'+(relPos*w).toFixed(1)+'%"></span></div>'
+      + '</div>';
+  }).join("");
+  document.getElementById("tornado").innerHTML = html || '<div class="fn">스윙이 있는 변수가 없습니다.</div>';
+}
+
+function render(){
+  ALL.forEach(function(x){
+    document.getElementById("lab_"+x.k).textContent = (x.k==="rho") ? S[x.k].toFixed(2) : pct(S[x.k]);
+    document.getElementById("in_"+x.k).value = Math.round(S[x.k]*100);
+  });
+
+  var m = model(S);
+  var bd = bounds(2);
+
+  document.getElementById("oA").textContent = pct(m.a2);
+  document.getElementById("oB").textContent = pct(m.b2);
+  document.getElementById("oAr").innerHTML = pct(bd.aLo) + "~" + pct(bd.aHi)
+    + '<br><span style="font-size:.63rem;color:#80868b">3문 완전상관↔완전독립</span>';
+  document.getElementById("oBr").innerHTML = pct(bd.bLo) + "~" + pct(bd.bHi)
+    + '<br><span style="font-size:.63rem;color:#80868b">잡오퍼 판단구간 42~70%</span>';
+
+  document.getElementById("a1").textContent = pct(m.a1);
+  document.getElementById("b1").textContent = pct(m.b1);
+  document.getElementById("a2").textContent = pct(m.a2);
+  document.getElementById("b2").textContent = pct(m.b2);
+  document.getElementById("a3").textContent = pct(m.a3);
+  document.getElementById("b3").textContent = pct(m.b3);
+  document.getElementById("bplus").textContent = pct(m.bp) + " @34~35";
+
+  document.getElementById("corrNote").innerHTML =
+    "현재 3문 합산 = <b>" + pct1(m.G.p) + "</b> "
+    + "(완전 독립 " + pct1(m.G.ind) + " ~ 완전 상관 " + pct1(m.G.cor) + ")<br>"
+    + "문2 실효값 = 취업 " + pct(S.s3) + " × 스폰서 " + pct(S.g2c) + " = <b>" + pct1(m.g2) + "</b>";
+
+  // 동적 결론
+  var d2 = (m.b2 - m.a2)*100;
+  var d3 = (m.b3 - m.a3)*100;
+  var v = "";
+  if(Math.abs(d2) < 6){
+    v = "<b>② 부부 동반 확률로는 두 분기가 구분되지 않습니다</b> (차이 "
+      + (d2>=0?"+":"") + d2.toFixed(1) + "pp, 구간이 크게 겹침). 확률로는 결정이 안 됩니다. ";
+  } else if(d2 > 0){
+    v = "<b>② 기준 NZ가 " + d2.toFixed(1) + "pp 앞섭니다.</b> ";
+  } else {
+    v = "<b>② 기준 호주가 " + (-d2).toFixed(1) + "pp 앞섭니다.</b> ";
+  }
+  if(d3 > 8){
+    v += "다만 <b>③ 부부 무중단에서는 NZ가 " + d3.toFixed(0)
+      + "pp 앞섭니다</b> — 하연의 PSWV가 학업 전 구간을 덮는 반면 호주는 하연 노드가 둘이기 때문입니다. "
+      + "⭐ NZ의 실제 강점은 '안정성'이 아니라 <b>배우자 동반 확실성</b>입니다.";
+  } else if(d3 > 0){
+    v += "③ 무중단 격차도 " + d3.toFixed(0) + "pp로 좁혀졌습니다 — <b>호주의 마지막 실질 격차가 사라지는 구간</b>입니다.";
+  } else {
+    v += "③ 무중단에서도 호주가 앞섭니다.";
+  }
+  document.getElementById("verdict").innerHTML = v;
+
+  tornado(m);
+}
+
+/* ---------- 토글 ---------- */
+function applyToggles(){
+  var sup = document.getElementById("tgSup").checked;
+  var naati = document.getElementById("tgNaati").checked;
+  var g1 = sup ? .30 : .10;
+  if(naati) g1 = Math.min(.70, g1 + .03);
+  S.g1 = g1;
+  S.s3 = sup ? .78 : .65;
+  clearPreset();
+  render();
+}
+document.getElementById("tgSup").addEventListener("change", applyToggles);
+document.getElementById("tgNaati").addEventListener("change", applyToggles);
+
+/* ---------- 프리셋 ---------- */
+var PRESETS = {
+  base: {},
+  opt: { s0a:.99, s0b:.90, s1:.98, s2:.98, s2b:.85, s3:.88, g1:.45, g2c:.65, g3:.18, pj:.97, rho:.15,
+         n1:.97, n1b:.98, n2:.70, n3:.94, nc:.92 },
+  pes: { s0a:.94, s0b:.65, s1:.92, s2:.92, s2b:.45, s3:.65, g1:.15, g2c:.35, g3:.05, pj:.80, rho:.75,
+         n1:.90, n1b:.92, n2:.42, n3:.85, nc:.70 },
+  t1:  { s0b:.05, s2b:.30 },
+  t2:  { g1:.15 },
+  t3:  { g1:0, g2c:0 }
+};
+var PRE_NOTE = {
+  t1: "동반 제한 시행령이 계류 중 신청에 소급 적용된 경우. ③ 무중단이 급락하지만 ②는 파트너 비자 경로가 남아 덜 떨어집니다.",
+  t2: "WA 2026-27 프로그램이 재개됐으나 ICT가 또 비우선인 경우.",
+  t3: "기술이민과 482가 동시에 죽는 경우 — <b>이 조합만이 A를 실제로 죽입니다.</b>"
+};
+document.querySelectorAll("#pre button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var p = btn.getAttribute("data-p");
+    ALL.forEach(function(x){ S[x.k] = DEF[x.k]; });
+    var o = PRESETS[p] || {};
+    for(var k in o) S[k] = o[k];
+    // 토글 상태를 프리셋과 동기화
+    document.getElementById("tgSup").checked = (S.s3 >= .70);
+    document.getElementById("tgNaati").checked = false;
+    clearPreset();
+    btn.classList.add("on");
+    render();
+  });
+});
+
+/* ---------- 민감도 기준 ---------- */
+document.querySelectorAll("#senPick button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    document.querySelectorAll("#senPick button").forEach(function(b){ b.classList.remove("on"); });
+    btn.classList.add("on");
+    senTier = +btn.getAttribute("data-s");
+    var lbl = {1:"① 원석 단독", 2:"② 부부 최종 동반", 3:"③ 부부 무중단"}[senTier];
+    document.getElementById("senTargetLabel").textContent = lbl;
+    render();
+  });
+});
+
+document.getElementById("reset").addEventListener("click", function(){
+  ALL.forEach(function(x){ S[x.k] = DEF[x.k]; });
+  document.getElementById("tgSup").checked = true;
+  document.getElementById("tgNaati").checked = false;
+  clearPreset();
+  document.querySelector('#pre button[data-p="base"]').classList.add("on");
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
