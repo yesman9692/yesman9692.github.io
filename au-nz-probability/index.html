@@ -160,11 +160,11 @@
   <!-- 토글 -->
   <div class="card">
     <h2><span class="n">2</span>내 선택 (민감도가 뒤집은 우선순위)</h2>
-    <p class="hint">이 두 개가 정본에서 등급이 갈린 항목입니다. 켜고 끄면서 숫자가 얼마나 움직이는지 보세요.</p>
+    <p class="hint">이 두 개가 정본에서 등급이 갈린 항목입니다. 켜고 끄면서 숫자가 얼마나 움직이는지 보세요.<br><b>토글은 현재 슬라이더 값에 증분으로 적용됩니다</b> — 직접 맞춰둔 값이 기본값으로 되돌아가지 않습니다.</p>
     <div class="tg">
       <div>
         <div class="tgt">PTE Superior 확보</div>
-        <div class="tgd">끄면 기술이민 초청 0.30→0.10, 취업 0.78→0.65. <b>두 군데에 동시 작동</b> — NZ도 단일 실패점이 취업이라 어느 분기든 값이 유지되는 유일한 투자</div>
+        <div class="tgd">끄면 기술이민 초청 <b>−20pp</b>, 취업 <b>−13pp</b>. <b>두 군데에 동시 작동</b> — NZ도 단일 실패점이 취업이라 어느 분기든 값이 유지되는 유일한 투자</div>
       </div>
       <label class="sw"><input type="checkbox" id="tgSup" checked><span class="sl"></span></label>
     </div>
@@ -469,16 +469,34 @@ function render(){
   tornado(m);
 }
 
-/* ---------- 토글 ---------- */
+/* ---------- 토글 ----------
+   ⚠️ 절대값으로 덮어쓰면 사용자가 직접 맞춰둔 슬라이더가 조용히 기본값으로 되돌아간다.
+      토글은 '현재값에 대한 증분'으로만 작동하고, 직전 상태를 기억해 중복 적용을 막는다. */
+var TG = { sup:true, naati:false };
+var D_SUP_G1 = .20, D_SUP_S3 = .13, D_NAATI_G1 = .03;
+function clamp(k, v){
+  var x = ALL.filter(function(a){ return a.k === k; })[0];
+  return Math.max(x.lo, Math.min(x.hi, Math.round(v*100)/100));
+}
 function applyToggles(){
   var sup = document.getElementById("tgSup").checked;
   var naati = document.getElementById("tgNaati").checked;
-  var g1 = sup ? .30 : .10;
-  if(naati) g1 = Math.min(.70, g1 + .03);
-  S.g1 = g1;
-  S.s3 = sup ? .78 : .65;
+  if(sup !== TG.sup){
+    var d = sup ? 1 : -1;
+    S.g1 = clamp("g1", S.g1 + d*D_SUP_G1);
+    S.s3 = clamp("s3", S.s3 + d*D_SUP_S3);
+    TG.sup = sup;
+  }
+  if(naati !== TG.naati){
+    S.g1 = clamp("g1", S.g1 + (naati ? 1 : -1)*D_NAATI_G1);
+    TG.naati = naati;
+  }
   clearPreset();
   render();
+}
+function syncToggles(){
+  document.getElementById("tgSup").checked = TG.sup;
+  document.getElementById("tgNaati").checked = TG.naati;
 }
 document.getElementById("tgSup").addEventListener("change", applyToggles);
 document.getElementById("tgNaati").addEventListener("change", applyToggles);
@@ -505,9 +523,10 @@ document.querySelectorAll("#pre button").forEach(function(btn){
     ALL.forEach(function(x){ S[x.k] = DEF[x.k]; });
     var o = PRESETS[p] || {};
     for(var k in o) S[k] = o[k];
-    // 토글 상태를 프리셋과 동기화
-    document.getElementById("tgSup").checked = (S.s3 >= .70);
-    document.getElementById("tgNaati").checked = false;
+    // 토글 상태를 프리셋과 동기화 (증분 재적용 없이 상태만 맞춘다)
+    TG.sup = (S.s3 >= .70);
+    TG.naati = false;
+    syncToggles();
     clearPreset();
     btn.classList.add("on");
     render();
@@ -528,8 +547,8 @@ document.querySelectorAll("#senPick button").forEach(function(btn){
 
 document.getElementById("reset").addEventListener("click", function(){
   ALL.forEach(function(x){ S[x.k] = DEF[x.k]; });
-  document.getElementById("tgSup").checked = true;
-  document.getElementById("tgNaati").checked = false;
+  TG.sup = true; TG.naati = false;
+  syncToggles();
   clearPreset();
   document.querySelector('#pre button[data-p="base"]').classList.add("on");
   render();
