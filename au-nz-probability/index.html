@@ -201,8 +201,8 @@
 
   <!-- 상관 -->
   <div class="card">
-    <h2><span class="n">4</span>영주권 3문의 상관 정도</h2>
-    <p class="hint">세 문(기술이민·482·하연폴백)이 서로 독립인지, 하나의 정책 충격에 같이 닫히는지. <b>이 슬라이더가 A의 결과를 가장 크게 흔듭니다.</b></p>
+    <h2><span class="n">4</span>상관 구조 — "그냥 다 곱해도 되나?"</h2>
+    <p class="hint"><b>안 됩니다.</b> 단순 곱셈은 모든 관문이 서로 독립이라고 가정하는데, 현실은 둘 다 아닙니다. 두 종류의 뭉침을 각각 손잡이로 뺐습니다 — <b>λ</b>는 사람(역량)이 만드는 뭉침, <b>ρ</b>는 정책이 만드는 뭉침. 둘 다 0으로 내리면 원래의 단순 곱셈으로 돌아갑니다.</p>
     <div id="varsR"></div>
     <div class="lg" id="corrNote"></div>
   </div>
@@ -285,7 +285,9 @@ var A_VARS = [
 ];
 
 var R_VARS = [
-  {k:"rho", n:"상관계수 ρ", t:"j", v:.42, lo:0, hi:1,
+  {k:"lam", n:"공통 역량 요인 λ (직렬 노드)", t:"j", v:.30, lo:0, hi:.95,
+   d:"⭐ <b>\"그냥 다 곱하는 게 맞냐\"에 대한 답.</b> 졸업·취업·비자는 <b>같은 사람</b>이 치르는 관문이라 서로 독립이 아니다. 영어가 되고 성실하면 여러 개가 <b>같이</b> 올라가고, 안 되면 <b>같이</b> 떨어진다. 실패가 뭉치므로 <b>독립 곱셈은 전 구간 통과 확률을 과소평가</b>한다.<br><b>λ=0</b> = 단순 곱셈(원래 방식) / <b>λ→1</b> = 완전 연동(가장 약한 고리가 전부를 결정). 기본 0.30.<br>⚠️ 적용 대상은 <b>원석 본인의 역량에 달린 노드</b>뿐이다(호주 = 비자·졸업·485·취업 / NZ = 졸업·취업·SMC승인). <b>하연 비자와 정책 관문(기술이민·482·공인고용주)에는 적용하지 않는다</b> — 그건 역량이 아니라 정부·고용주가 정하는 것이라 원석이 잘한다고 같이 올라가지 않는다."},
+  {k:"rho", n:"상관계수 ρ (영주권 3문)", t:"j", v:.42, lo:0, hi:1,
    d:"<b>0 = 완전 독립</b>(세 문이 서로 무관) ~ <b>1 = 완전 상관</b>(하나의 충격이 셋을 동시에 닫음).<br>기본 0.42는 독립 쪽 가중 = 정본이 <i>'기술이민 문턱은 단방향, 고용주 스폰서 채널은 양방향(현재 완화)'</i>으로 판정하고 그것이 <b>491 −57% ↔ 482 +32%라는 정부 표 하나로 실증</b>되기 때문. 두 채널은 실제로 반대로 움직인 이력이 있어 음의 상관 성분이 있다. 또 <b>문1 실패 → 현지 경력 축적 → 문2 상승</b>의 경로 의존도 있다."}
 ];
 
@@ -311,28 +313,62 @@ ALL.forEach(function(x){ S[x.k] = x.v; DEF[x.k] = x.v; });
 
 var senTier = 2;
 
-/* ---------- 모델 ---------- */
+/* ---------- 모델 ----------
+   ⛔ 직렬 노드를 그냥 곱하면 "서로 독립"을 가정하는 것인데, 졸업·취업·비자는 같은 사람이
+      치르는 관문이라 독립이 아니다. 실패가 뭉치므로 단순 곱셈은 통과 확률을 과소평가한다.
+   ✅ 1-factor 가우시안 코퓰러: 잠재 역량 z(표준정규)를 하나 두고
+      p_i(z) = Φ( (Φ⁻¹(p_i) + λz) / √(1-λ²) ) 로 노드를 함께 흔든 뒤 z에 대해 적분한다.
+      λ=0 이면 단순 곱셈과 정확히 일치하고, λ→1 이면 가장 약한 고리가 전부를 지배한다. */
+function ncdf(x){
+  var t = 1/(1+0.2316419*Math.abs(x));
+  var d = 0.3989422804014327*Math.exp(-x*x/2);
+  var p = d*t*(0.319381530 + t*(-0.356563782 + t*(1.781477937 + t*(-1.821255978 + t*1.330274429))));
+  return x >= 0 ? 1-p : p;
+}
+function nicdf(p){
+  var a=[-3.969683028665376e1,2.209460984245205e2,-2.759285104469687e2,1.383577518672690e2,-3.066479806614716e1,2.506628277459239e0];
+  var b=[-5.447609879822406e1,1.615858368580409e2,-1.556989798598866e2,6.680131188771972e1,-1.328068155288572e1];
+  var c=[-7.784894002430293e-3,-3.223964580411365e-1,-2.400758277161838e0,-2.549732539343734e0,4.374664141464968e0,2.938163982698783e0];
+  var d=[7.784695709041462e-3,3.224671290700398e-1,2.445134137142996e0,3.754408661907416e0];
+  var pl=0.02425, q, r;
+  if(p < pl){ q=Math.sqrt(-2*Math.log(p));
+    return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  if(p > 1-pl){ q=Math.sqrt(-2*Math.log(1-p));
+    return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  q=p-0.5; r=q*q;
+  return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+var ZG=[], ZW=[];
+(function(){ for(var z=-4; z<=4.0001; z+=0.2){ ZG.push(z); ZW.push(Math.exp(-z*z/2)); } })();
+
+function sh(p, z, lam){                      // 역량 요인으로 노드를 흔든다
+  if(lam <= 0 || p <= 1e-6 || p >= 1-1e-6) return p;
+  return ncdf((nicdf(p) + lam*z)/Math.sqrt(1-lam*lam));
+}
 function gates(g1, g2, g3, rho){
   var ind = 1 - (1-g1)*(1-g2)*(1-g3);
   var cor = Math.max(g1, g2, g3);
   return { p:(1-rho)*ind + rho*cor, ind:ind, cor:cor };
 }
 function model(s){
-  var g2 = s.s3 * s.g2c;                       // 482는 취업 조건부
-  var G  = gates(s.g1, g2, s.g3, s.rho);
-  var serial = s.s0a * s.s1 * s.s2;
-
-  var a1 = serial * G.p;
-  var a2 = a1 * s.pj;
-  var a3 = s.s0a * s.s0b * s.s1 * s.s2 * s.s2b * G.p;
-
-  var n2 = s.n2a * s.n2b;                       // 노동시장 × 공인고용주 게이트
-  var b1 = s.n1 * n2 * s.n3;
-  var b2 = s.n1 * s.n1b * n2 * s.n3;
-  var b3 = b2;                                  // 파트너 워크비자가 전 구간 커버 → ②=③
-  var bp = b2 * s.nc;
-
-  return {a1:a1,a2:a2,a3:a3,b1:b1,b2:b2,b3:b3,bp:bp,G:G,g2:g2,n2:n2};
+  var lam = s.lam || 0;
+  var A1=0, A3=0, B1=0, W=0;
+  for(var i=0; i<ZG.length; i++){
+    var z=ZG[i], w=ZW[i];
+    // 역량에 달린 노드만 함께 흔든다 (하연 비자·정책 관문은 제외)
+    var s0a=sh(s.s0a,z,lam), s1=sh(s.s1,z,lam), s2=sh(s.s2,z,lam), s3=sh(s.s3,z,lam);
+    var n1 =sh(s.n1 ,z,lam), n2a=sh(s.n2a,z,lam), n3=sh(s.n3,z,lam);
+    var Gz = gates(s.g1, s3*s.g2c, s.g3, s.rho).p;   // 482는 취업 조건부
+    A1 += w * (s0a*s1*s2) * Gz;
+    A3 += w * (s0a*s.s0b*s1*s2*s.s2b) * Gz;
+    B1 += w * (n1*n2a*s.n2b*n3);
+    W  += w;
+  }
+  A1/=W; A3/=W; B1/=W;
+  var b2 = B1 * s.n1b;
+  // 표시용 — 슬라이더에 보이는 값 그대로(λ 미적용)
+  var g2d = s.s3*s.g2c, Gd = gates(s.g1, g2d, s.g3, s.rho), n2d = s.n2a*s.n2b;
+  return {a1:A1, a2:A1*s.pj, a3:A3, b1:B1, b2:b2, b3:b2, bp:b2*s.nc, G:Gd, g2:g2d, n2:n2d};
 }
 function pct(x){ return (x*100).toFixed(0) + "%"; }
 function pct1(x){ return (x*100).toFixed(1) + "%"; }
@@ -430,7 +466,7 @@ function tornado(m){
 
 function render(){
   ALL.forEach(function(x){
-    document.getElementById("lab_"+x.k).textContent = (x.k==="rho") ? S[x.k].toFixed(2) : pct(S[x.k]);
+    document.getElementById("lab_"+x.k).textContent = (x.k==="rho"||x.k==="lam") ? S[x.k].toFixed(2) : pct(S[x.k]);
     document.getElementById("in_"+x.k).value = Math.round(S[x.k]*100);
   });
 
