@@ -92,6 +92,12 @@
   .warnbox{background:#fef7e0;border:1px solid #f9ab00;border-radius:8px;padding:11px 13px;font-size:.78rem;color:#5f4200}
   .warnbox b{color:#b06000}
   code{background:#f1f3f4;padding:1px 5px;border-radius:3px;font-size:.92em}
+  .jcmp{background:#f8f9fa;border-radius:8px;padding:11px 12px;font-size:.79rem;margin-top:4px}
+  .jrow{display:flex;justify-content:space-between;gap:10px;padding:5px 0;align-items:baseline}
+  .jrow b{font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .jhi{color:#c5221f;font-size:1.02rem}
+  .jsep{font-size:.72rem;color:#80868b;border-top:1px dashed #dadce0;margin:7px 0 4px;padding-top:7px}
+  .jnote{margin-top:9px;padding-top:9px;border-top:1px solid #e8eaed;font-size:.77rem;color:#3c4043;line-height:1.55}
   .fbtn{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#202124;color:#fff;border:none;border-radius:22px;padding:11px 22px;font-size:.82rem;font-family:inherit;font-weight:600;box-shadow:0 3px 10px rgba(0,0,0,.3);cursor:pointer;z-index:50}
   @media(max-width:420px){.rbig{font-size:1.85rem}h1{font-size:1.2rem}}
 </style>
@@ -141,6 +147,11 @@
     </div>
 
     <div class="verdict" id="verdict"></div>
+
+    <details style="margin-top:4px">
+      <summary>▸ 🇦🇺78% vs 🇳🇿58%? — 두 숫자는 같은 것을 재지 않습니다</summary>
+      <div class="jcmp" id="jobCmp"></div>
+    </details>
   </div>
 
   <!-- 프리셋 -->
@@ -281,10 +292,12 @@ var R_VARS = [
 var B_VARS = [
   {k:"n1", n:"NZ 석사 입학·졸업", t:"j", v:.93, lo:.80, hi:.99,
    d:"Massey/AUT 영어요건 <b>Overall 58</b>, 원석 PTE <b>70</b>으로 충족. 예치금 제도 없고 Massey는 비자 거절 시 전액 환불 명문. ⚠️영역별 50+ 여부·<b>센터 응시분인지</b> 미확인(AUT는 온라인 PTE 불인정)."},
-  {k:"n1b", n:"하연 학생 파트너 워크비자(PSWV)", t:"m", v:.95, lo:.80, hi:.99,
-   d:"⭐ <b>B의 최대 강점.</b> 오픈 워크라이트, <b>잡오퍼 불요</b>, 80%가 5주, 승인율 <b>98.6%</b>. 파트너가 Level 9(석사) 과정이면 자격. 호주의 하연 노드 둘(0.80·0.67)과 정면 대비되는 지점."},
-  {k:"n2", n:"졸업 후 공인 고용주 잡오퍼", t:"j", v:.58, lo:.20, hi:.85,
-   d:"⛔ <b>단일 실패점.</b> 원문상 <code>employer who is accredited</code>가 3경로 공통 요건. 공인 고용주 풀 약 30,000이나 <b>취소 1,641·정지 1,049 = 개별 제재 위험 연 4%</b>. 🔴 결정적 반증 = <b>261313 취업비자 발급 밀도가 인구 1만명당 NZ 0.51 vs 호주 0.54로 사실상 동일</b> — 고용주 비용이 3~5배 싼데 문의 폭이 같다 = <b>비용은 병목이 아니었다.</b> 오클랜드 IT 공인 고용주 수는 미측정."},
+  {k:"n1b", n:"하연 학생 파트너 워크비자", t:"j", v:.95, lo:.80, hi:.99,
+   d:"⭐ <b>B의 최대 강점.</b> <b>오픈 워크라이트, 잡오퍼 불요</b>, NZD 1,630, <b>80%가 5주</b>. 파트너가 Level 9(석사) 과정이면 자격. 호주의 하연 노드 둘(0.80·0.67)과 정면 대비되는 지점.<br>⛔ <b>2026-09-22 정정 — 이 비자의 승인율은 미확인이다.</b> 이전 기재의 '승인율 98.6%'는 <b>원석의 Post Study Work Visa</b>(졸업후취업비자, 2025/26 승인 11,226건) 수치를 하연 비자에 잘못 붙인 것이었다. 정본 용어표가 <i>'⚠️하연의 파트너 비자와 혼동 금지'</i>로 경고한 바로 그 혼동."},
+  {k:"n2a", n:"오클랜드 개발자 취업 (노동시장)", t:"j", v:.78, lo:.45, hi:.92,
+   d:"⭐ <b>호주 0.78과 같은 값을 쓴다 — 의도적 대칭이다.</b> 비교 대상이 'NZ 전체 vs 호주 전체'가 아니라 <b>오클랜드 vs 퍼스</b>이고, 원석 진술대로 오클랜드가 밀도·한인 인프라에서 오히려 크다. 실측 뒷받침 = <b>261313 취업비자 발급 밀도 인구 1만명당 NZ 0.51 vs 호주 0.54로 사실상 동일</b>(기술이민 영주권 밀도 49.2 vs 47.3도 같은 패턴).<br>⚠️ <b>단 구직 창 길이는 대칭이 아직 증명 안 됐다</b> — 호주 485의 2~3년은 실측이고, NZ PSWV 기간은 <b>정본에서 미확인</b>(같은 문서 안에 '3년'과 '❓'가 공존). 3년으로 확인되면 이 대칭이 더 정당해진다."},
+  {k:"n2b", n:"그 고용주가 공인 + 게이트 충족", t:"j", v:.74, lo:.45, hi:.95,
+   d:"⛔ <b>여기가 NZ의 단일 실패점이다</b> — 노동시장이 아니라 <b>이 게이트</b>. 원문상 <code>employer who is accredited</code>가 3경로 공통 요건이고, 여기에 <b>ANZSCO 1~3 + 임금문턱(NZ$35.00/h) + 주 30시간 + 12개월 계약</b>이 겹친다. 공인 고용주 풀 24,334(2025-05)→약 30,000(2026-07) 순증이나 <b>취소 1,641·정지 1,049 = 개별 제재 위험 연 4%</b>. <b>오클랜드 IT의 공인 고용주 비율은 미측정</b> — 이 0.74가 이 모델에서 가장 근거가 얇은 숫자다."},
   {k:"n3", n:"SMC 6점 충족 + 승인", t:"m", v:.90, lo:.75, hi:.98,
    d:"<b>NZ 석사(NZ 내 30주+ 풀타임) = 6점 단독 충족</b>, 학사 보유 필요 → 원석 CS 학사 있음. 승인율 <b>93.8%</b>, 47근무일, <b>경쟁 풀 없는 고정 문턱</b>. 2026-08-24 red/amber 리스트는 <b>자격 경로를 막지 않는다</b>(INZ 원문 확인) — 타격 대상은 학위 없이 경력만으로 노리던 사람."},
   {k:"nc", n:"(참고) 5년 붙박이 → NZ 시민권", t:"j", v:.85, lo:.50, hi:.98,
@@ -313,12 +326,13 @@ function model(s){
   var a2 = a1 * s.pj;
   var a3 = s.s0a * s.s0b * s.s1 * s.s2 * s.s2b * G.p;
 
-  var b1 = s.n1 * s.n2 * s.n3;
-  var b2 = s.n1 * s.n1b * s.n2 * s.n3;
-  var b3 = b2;                                  // PSWV가 전 구간 커버 → ②=③
+  var n2 = s.n2a * s.n2b;                       // 노동시장 × 공인고용주 게이트
+  var b1 = s.n1 * n2 * s.n3;
+  var b2 = s.n1 * s.n1b * n2 * s.n3;
+  var b3 = b2;                                  // 파트너 워크비자가 전 구간 커버 → ②=③
   var bp = b2 * s.nc;
 
-  return {a1:a1,a2:a2,a3:a3,b1:b1,b2:b2,b3:b3,bp:bp,G:G,g2:g2};
+  return {a1:a1,a2:a2,a3:a3,b1:b1,b2:b2,b3:b3,bp:bp,G:G,g2:g2,n2:n2};
 }
 function pct(x){ return (x*100).toFixed(0) + "%"; }
 function pct1(x){ return (x*100).toFixed(1) + "%"; }
@@ -333,15 +347,15 @@ function sweep(key, val){
   s[key] = val;
   return model(s);
 }
-/* 잡오퍼의 '판단 구간'은 슬라이더 이동범위(20~85%)가 아니라 정본이 명시한 42~70%다.
-   슬라이더는 극단까지 밀어볼 수 있게 넓게 두고, 표시 구간은 판단 구간을 쓴다. */
-var N2_JLO = .42, N2_JHI = .70;
+/* B의 구간은 상관 구조가 없다(직렬). 지배 변수 = 공인고용주 게이트이므로 그것의 판단구간을 훑는다.
+   n2b 0.54~0.90 × 기본 n2a 0.78 = 실효 잡오퍼 42~70% (정본 구간과 일치). */
+var N2B_JLO = .54, N2B_JHI = .90;
 function bounds(tier){
   return {
     aLo: sweep("rho", 1)["a"+tier],        // 완전 상관 = 하나의 충격이 3문을 동시에 닫음
     aHi: sweep("rho", 0)["a"+tier],        // 완전 독립
-    bLo: sweep("n2", N2_JLO)["b"+tier],
-    bHi: sweep("n2", N2_JHI)["b"+tier]
+    bLo: sweep("n2b", N2B_JLO)["b"+tier],
+    bHi: sweep("n2b", N2B_JHI)["b"+tier]
   };
 }
 
@@ -379,7 +393,7 @@ function tornado(m){
   var rows = [];
 
   ALL.forEach(function(x){
-    var side = (["n1","n1b","n2","n3","nc"].indexOf(x.k) >= 0) ? "b" : "a";
+    var side = (["n1","n1b","n2a","n2b","n3","nc"].indexOf(x.k) >= 0) ? "b" : "a";
     var base = (side === "a") ? cur.a : cur.b;
 
     var sLo = {}, sHi = {};
@@ -428,7 +442,7 @@ function render(){
   document.getElementById("oAr").innerHTML = pct(bd.aLo) + "~" + pct(bd.aHi)
     + '<br><span style="font-size:.63rem;color:#80868b">3문 완전상관↔완전독립</span>';
   document.getElementById("oBr").innerHTML = pct(bd.bLo) + "~" + pct(bd.bHi)
-    + '<br><span style="font-size:.63rem;color:#80868b">잡오퍼 판단구간 42~70%</span>';
+    + '<br><span style="font-size:.63rem;color:#80868b">공인고용주 게이트 54~90%</span>';
 
   document.getElementById("a1").textContent = pct(m.a1);
   document.getElementById("b1").textContent = pct(m.b1);
@@ -442,6 +456,17 @@ function render(){
     "현재 3문 합산 = <b>" + pct1(m.G.p) + "</b> "
     + "(완전 독립 " + pct1(m.G.ind) + " ~ 완전 상관 " + pct1(m.G.cor) + ")<br>"
     + "문2 실효값 = 취업 " + pct(S.s3) + " × 스폰서 " + pct(S.g2c) + " = <b>" + pct1(m.g2) + "</b>";
+
+  // 취업 노드 대조 — "호주 78% vs NZ 58%" 오해를 차단한다
+  document.getElementById("jobCmp").innerHTML =
+    '<div class="jrow"><span>🇦🇺 개발자 취업 <b>아무 고용주나</b></span><b>' + pct(S.s3) + '</b></div>'
+    + '<div class="jrow"><span>🇳🇿 개발자 취업 <b>(같은 노동시장)</b></span><b>' + pct(S.n2a) + '</b></div>'
+    + '<div class="jsep">↓ 여기서부터 영주권으로 이어지는 관문이 붙는다</div>'
+    + '<div class="jrow"><span>🇦🇺 × 고용주가 <b>482 스폰서 의향</b> ' + pct(S.g2c) + '</span><b class="jhi">' + pct1(m.g2) + '</b></div>'
+    + '<div class="jrow"><span>🇳🇿 × 고용주가 <b>공인 + 게이트 충족</b> ' + pct(S.n2b) + '</span><b class="jhi">' + pct1(m.n2) + '</b></div>'
+    + '<div class="jnote">' + (m.n2 > m.g2
+        ? '→ <b>영주권으로 이어지는 취업은 NZ가 ' + ((m.n2-m.g2)*100).toFixed(0) + 'pp 앞섭니다.</b> 노동시장은 같게 놓았고, 갈리는 건 <b>고용주 쪽 관문</b>입니다 — 호주는 SAF 부담금 $4,800~7,200을 선납할 의향, NZ는 공인 지위 보유가 관문.'
+        : '→ 현재 설정에서는 호주가 ' + ((m.g2-m.n2)*100).toFixed(0) + 'pp 앞섭니다.') + '</div>';
 
   // 동적 결론
   var d2 = (m.b2 - m.a2)*100;
@@ -505,9 +530,9 @@ document.getElementById("tgNaati").addEventListener("change", applyToggles);
 var PRESETS = {
   base: {},
   opt: { s0a:.99, s0b:.90, s1:.98, s2:.98, s2b:.85, s3:.88, g1:.45, g2c:.65, g3:.18, pj:.97, rho:.15,
-         n1:.97, n1b:.98, n2:.70, n3:.94, nc:.92 },
+         n1:.97, n1b:.98, n2a:.88, n2b:.88, n3:.94, nc:.92 },
   pes: { s0a:.94, s0b:.65, s1:.92, s2:.92, s2b:.45, s3:.65, g1:.15, g2c:.35, g3:.05, pj:.80, rho:.75,
-         n1:.90, n1b:.92, n2:.42, n3:.85, nc:.70 },
+         n1:.90, n1b:.92, n2a:.65, n2b:.58, n3:.85, nc:.70 },
   t1:  { s0b:.05, s2b:.30 },
   t2:  { g1:.15 },
   t3:  { g1:0, g2c:0 }
