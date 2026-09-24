@@ -22,6 +22,12 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   overflow-x:hidden;}
 body{padding-bottom:24px;}
 .app{max-width:720px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:10px;}
+.sidebar{display:contents;}
+#summaryCard{order:1;}
+#controlsCard{order:2;}
+.map-card{order:3;}
+.table-card{order:4;}
+.foot{order:5;}
 .card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
   padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
 h1{font-size:1.15rem;margin:0 0 6px;}
@@ -73,6 +79,53 @@ h1{font-size:1.15rem;margin:0 0 6px;}
 @media (max-width:480px){
   #suburbTable th:nth-child(2), #suburbTable td:nth-child(2){ display:none; }
 }
+
+/* 태블릿(768~1023px): 1단이되 max-width 해제, 지도 높이 65vh */
+@media (min-width:768px) and (max-width:1023.98px){
+  .app{max-width:none;padding:16px 28px;}
+  #map{height:65vh;}
+}
+
+/* PC(>=1024px): 좌측 사이드바 + 우측 지도(화면 높이 전체, 스크롤해도 고정) */
+@media (min-width:1024px){
+  .app{
+    display:grid;
+    grid-template-columns:minmax(360px,400px) 1fr;
+    align-items:start;
+    gap:16px;
+    max-width:none;
+    padding:16px;
+    min-height:100vh;
+  }
+  /* html,body의 overflow-x:hidden(모바일 가로스크롤 방지용)은 overflow-y가 'visible'이면
+     스펙상 자동으로 'auto'로 승격되어 버린다 — 이러면 body/html이 독자적인 스크롤 컨테이너가
+     되면서 우측 지도의 position:sticky가 먹통이 된다(스크롤해도 지도가 그냥 같이 흘러감).
+     PC 폭에서는 두 축을 모두 visible로 되돌려 진짜 뷰포트 스크롤을 쓰게 한다. */
+  html,body{overflow-x:visible;overflow-y:visible;}
+  .sidebar{display:flex;flex-direction:column;gap:10px;}
+  .map-card{
+    position:sticky;
+    top:16px;
+    align-self:start;
+    height:calc(100vh - 32px);
+    padding:0;
+    overflow:hidden;
+  }
+  #map{height:100%;border-radius:10px;}
+  .legend{
+    position:absolute;
+    right:14px;
+    bottom:14px;
+    z-index:1000;
+    max-width:220px;
+    flex-direction:column;
+    align-items:flex-start;
+    background:rgba(255,255,255,.92);
+    border-radius:8px;
+    padding:8px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+  }
+}
 table{border-collapse:collapse;width:100%;font-size:.78rem;min-width:520px;}
 th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
 th{color:var(--sub);cursor:pointer;user-select:none;position:sticky;top:0;background:var(--card-bg);}
@@ -93,6 +146,7 @@ footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0
 </head>
 <body>
 <div class="app">
+  <div class="sidebar">
 
   <section class="card" id="summaryCard">
     <h1>오클랜드 렌트 감각 지도</h1>
@@ -116,9 +170,9 @@ footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0
       <button data-color="commute">통근시간</button>
     </div>
 
-    <div class="row-label"><span>최대 렌트</span><b id="maxRentVal">$650/주</b></div>
+    <div class="row-label"><span>최대 렌트</span><b id="maxRentVal">$550/주</b></div>
     <div class="slider-row">
-      <input type="range" id="maxRent" min="300" max="1000" step="25" value="650">
+      <input type="range" id="maxRent" min="300" max="1000" step="25" value="550">
     </div>
 
     <div class="row-label"><span>최대 통근</span><b id="maxCommuteVal">45분</b></div>
@@ -131,11 +185,6 @@ footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0
     <div class="filter-result" id="filterResult">계산 중...</div>
   </section>
 
-  <section class="card map-card">
-    <div id="map"></div>
-    <div class="legend" id="legend"></div>
-  </section>
-
   <section class="card table-card">
     <div class="row-label"><span>필터 통과 동네 (행 클릭 시 지도 이동)</span></div>
     <div class="table-scroll">
@@ -146,6 +195,7 @@ footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0
             <th data-key="district">구</th>
             <th data-key="median">중위($)</th>
             <th data-key="n">n</th>
+            <th data-key="budget">예산내</th>
             <th data-key="commute" class="sorted asc">통근(분)</th>
             <th data-key="modes">수단</th>
             <th data-key="km">직선km</th>
@@ -157,6 +207,12 @@ footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0
   </section>
 
   <footer class="foot" id="footNote"></footer>
+  </div>
+
+  <section class="card map-card">
+    <div id="map"></div>
+    <div class="legend" id="legend"></div>
+  </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -173,7 +229,7 @@ var MODE_LABEL = {"BUS":"버스","HEAVY_RAIL":"기차","RAIL":"기차","COMMUTER
                    "METRO_RAIL":"기차","SUBWAY":"기차","FERRY":"페리","WALK":"도보"};
 function modeLabel(m){ return MODE_LABEL[m] || "기타"; }
 
-var state = {beds:"2", colorBy:"rent", maxRent:650, maxCommute:45, showListings:false,
+var state = {beds:"2", colorBy:"rent", maxRent:550, maxCommute:45, showListings:false,
              sortKey:"commute", sortAsc:true};
 var DATA = null;
 var map, uoaMarker, suburbLayer, listingLayer, ringLayer;
@@ -221,14 +277,30 @@ function suburbN(s){
   return s.n_by_bed[state.beds] || 0;
 }
 
+// 동네 중위가 예산을 넘어도(표본이 적어 중위가 튀거나, 저가~고가가 섞여 있는 동네라도)
+// 실제로 예산 이하인 개별 매물이 있으면 그 동네는 후보에서 빠지면 안 된다.
+// 그래서 필터는 "중위 <= 예산"이 아니라 "선택 침실 · 예산 이하 매물이 1건 이상"으로 판정한다.
+var budgetCounts = [];
+function computeBudgetCounts(){
+  var bedNum = parseInt(state.beds, 10);
+  var counts = new Array(DATA.suburbs.length).fill(0);
+  DATA.listings.forEach(function(row){
+    if(row[4] !== bedNum) return;
+    if(row[3] > state.maxRent) return;
+    var idx = row[5];
+    if(idx >= 0 && idx < counts.length) counts[idx]++;
+  });
+  return counts;
+}
+function suburbBudgetCount(s){
+  return budgetCounts[s._idx] || 0;
+}
+
 function passesFilter(s){
-  var med = suburbMedian(s);
   var cm = suburbCommuteMin(s);
-  if(med == null) return false;
-  if(med > state.maxRent) return false;
   if(cm == null) return false;
   if(cm > state.maxCommute) return false;
-  return true;
+  return suburbBudgetCount(s) > 0;
 }
 
 function render(){
@@ -312,6 +384,7 @@ function popupHtml(s){
     return BED_LABEL[k] + " " + (ob ? fmtNZD(ob.median) : "-");
   }).join(" · ");
   lines.push(otherLine);
+  lines.push("예산($" + state.maxRent + ") 이하 " + suburbBudgetCount(s) + "건");
 
   var c = s.commute;
   if(c && c.transit_min != null){
@@ -371,12 +444,17 @@ function initMap(){
     L.marker(pt, {icon: L.divIcon({className:"", html:'<div class="km-ring-label">' + km + 'km</div>', iconSize:[40,16], iconAnchor:[20,8]}), interactive:false}).addTo(ringLayer);
   });
 
-  // 초기 화면에 15km 링(수도권 전체 맥락)이 다 보이도록 맞춤
-  if(outerRing){
-    map.fitBounds(outerRing.getBounds(), {padding:[8,8]});
-  } else {
-    map.setView([DATA.dest.lat, DATA.dest.lng], 11);
-  }
+  // 반응형 레이아웃(그리드 전환·vh 기준 지도 높이)이 확정된 뒤에야 컨테이너 크기가
+  // 정확하다. invalidateSize()로 크기를 다시 재보고 나서 fitBounds를 걸어야
+  // 타일이 회색으로 비는 문제 없이 15km 링(수도권 전체 맥락)이 다 보이게 맞춰진다.
+  requestAnimationFrame(function(){
+    map.invalidateSize();
+    if(outerRing){
+      map.fitBounds(outerRing.getBounds(), {padding:[8,8]});
+    } else {
+      map.setView([DATA.dest.lat, DATA.dest.lng], 11);
+    }
+  });
 
   suburbLayer = L.layerGroup().addTo(map);
   listingLayer = L.layerGroup();
@@ -390,6 +468,8 @@ function destOffset(lat, lng, km){
 function renderMap(){
   suburbLayer.clearLayers();
   suburbMarkers = {};
+
+  budgetCounts = computeBudgetCounts();
 
   var medians = DATA.suburbs.map(function(s){ return suburbMedian(s); });
   var commutes = DATA.suburbs.map(function(s){ return suburbCommuteMin(s); });
@@ -417,21 +497,16 @@ function renderMap(){
       fillColor: color, fillOpacity: fillOpacity, opacity: strokeOpacity
     }).addTo(suburbLayer);
     marker.bindPopup(popupHtml(s));
-    marker.on("click", function(){ highlightRow(s.id); });
     suburbMarkers[s.id] = {marker:marker, suburb:s};
   });
 
   renderLegend(rentBreaks, commuteBreaks);
   renderListingsLayer();
 
-  var passCount = DATA.suburbs.filter(passesFilter).length;
-  var bedNumForCount = parseInt(state.beds, 10);
-  var listingCount = 0;
-  DATA.listings.forEach(function(row){
-    if(row[4] !== bedNumForCount) return;
-    if(row[3] > state.maxRent) return;
-    var s = DATA.suburbs[row[5]];
-    if(s && passesFilter(s)) listingCount++;
+  // 필터 통과 동네 수 / 그 동네들 안에서 예산 이하인 매물 합계(전체 매물 수가 아니다)
+  var passCount = 0, listingCount = 0;
+  DATA.suburbs.forEach(function(s){
+    if(passesFilter(s)){ passCount++; listingCount += suburbBudgetCount(s); }
   });
   document.getElementById("filterResult").textContent =
     "조건 맞는 동네 " + passCount + "곳 / 매물 " + listingCount.toLocaleString() + "건";
@@ -490,6 +565,7 @@ function tableRows(){
     return {
       id: s.id, name: s.name, district: s.district,
       median: b ? b.median : null, n: b ? b.n : 0,
+      budget: suburbBudgetCount(s),
       commute: c.transit_min != null ? c.transit_min : Infinity,
       modes: (c.modes||[]).map(modeLabel).join("→"), km: s.km_uoa
     };
@@ -512,6 +588,7 @@ function renderTable(){
       "<td>" + r.name + "</td><td>" + r.district + "</td>" +
       "<td>" + (r.median!=null ? fmtNZD(r.median) : "-") + "</td>" +
       "<td>" + r.n + "</td>" +
+      "<td>" + r.budget + "</td>" +
       "<td>" + (isFinite(r.commute) ? r.commute : "-") + "</td>" +
       "<td>" + (r.modes || "-") + "</td>" +
       "<td>" + r.km + "</td></tr>";
@@ -526,11 +603,6 @@ function renderTable(){
       }
     });
   });
-}
-
-function highlightRow(id){
-  var tr = document.querySelector("#suburbTable tr[data-id='" + id + "']");
-  if(tr) tr.scrollIntoView({block:"nearest"});
 }
 
 function bindEvents(){
@@ -579,8 +651,24 @@ function bindEvents(){
   });
 }
 
+// 창 크기 변경·기기 회전 시 지도 컨테이너 크기가 바뀌므로 Leaflet에 다시
+// 알려줘야 한다 — 안 하면 새 크기만큼 타일이 회색으로 빈다(Leaflet 고질병).
+var resizeTimer = null;
+function scheduleInvalidateSize(){
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function(){
+    if(map) map.invalidateSize();
+  }, 150);
+}
+window.addEventListener("resize", scheduleInvalidateSize);
+window.addEventListener("orientationchange", scheduleInvalidateSize);
+
 fetch("data.json").then(function(r){ return r.json(); }).then(function(json){
   DATA = json;
+  // listings의 suburbIdx가 가리키는 배열 인덱스를 동네 객체에도 박아둔다 —
+  // filter()/map() 체인을 거치면 배열 인덱스가 바뀌어버려서, 예산내 매물 수를
+  // 동네별로 다시 찾을 때 원래 인덱스가 필요하다.
+  DATA.suburbs.forEach(function(s, i){ s._idx = i; });
   initMap();
   bindEvents();
   render();
