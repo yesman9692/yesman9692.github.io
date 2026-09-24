@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>오클랜드 렌트 감각 지도</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{
+  --bg:#f0f2f5;
+  --card-bg:#ffffff;
+  --accent:#1a73e8;
+  --text:#20242c;
+  --sub:#5f6570;
+  --border:#e1e4ea;
+  --grey-out:#b9bec7;
+  font-size:16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:'Malgun Gothic', system-ui, -apple-system, sans-serif;
+  overflow-x:hidden;}
+body{padding-bottom:24px;}
+.app{max-width:720px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:10px;}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+h1{font-size:1.15rem;margin:0 0 6px;}
+.meta-line{font-size:.82rem;color:var(--sub);margin-bottom:10px;line-height:1.5;}
+.meta-line b{color:var(--text);}
+
+.bed-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.bed-tile{background:var(--bg);border-radius:10px;padding:8px 6px;text-align:center;}
+.bed-tile .label{font-size:.72rem;color:var(--sub);}
+.bed-tile .median{font-size:1.05rem;font-weight:700;color:var(--accent);margin:2px 0;}
+.bed-tile .range{font-size:.7rem;color:var(--sub);}
+
+.dist-bars{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
+.dist-row{display:grid;grid-template-columns:52px 1fr 64px;align-items:center;gap:6px;font-size:.72rem;}
+.dist-row .rlabel{color:var(--sub);text-align:right;}
+.dist-row .bar-track{display:block;position:relative;background:var(--bg);border-radius:5px;height:14px;overflow:hidden;}
+.dist-row .bar-fill{display:block;height:100%;background:linear-gradient(90deg,#0c2c84,#41b6c4);border-radius:5px 0 0 5px;}
+.dist-row .rval{color:var(--text);font-weight:600;}
+.caption{font-size:.78rem;color:var(--sub);margin-top:8px;line-height:1.5;}
+
+.seg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.seg button{flex:1;padding:8px 4px;border:none;background:var(--card-bg);color:var(--text);
+  font-size:.85rem;cursor:pointer;font-family:inherit;}
+.seg button.active{background:var(--accent);color:#fff;font-weight:700;}
+.seg button:not(:last-child){border-right:1px solid var(--border);}
+
+.row-label{font-size:.78rem;color:var(--sub);margin:10px 0 4px;display:flex;justify-content:space-between;}
+.row-label b{color:var(--text);}
+
+.slider-row{margin-bottom:8px;}
+.slider-row input[type=range]{width:100%;accent-color:var(--accent);}
+
+.check-row{display:flex;align-items:center;gap:6px;font-size:.85rem;margin-top:8px;}
+.check-row input{width:16px;height:16px;accent-color:var(--accent);}
+
+.filter-result{margin-top:10px;font-size:.85rem;font-weight:600;color:var(--accent);
+  background:#eaf2fe;border-radius:8px;padding:8px 10px;}
+
+#map{height:60vh;width:100%;border-radius:10px;}
+.map-card{padding:8px;}
+.legend{display:flex;flex-wrap:wrap;gap:6px 10px;padding:8px 6px 2px;font-size:.7rem;color:var(--sub);align-items:center;}
+.legend .sw{width:14px;height:14px;border-radius:3px;flex:none;}
+.legend .lg-item{display:flex;align-items:center;gap:4px;}
+.legend .lg-title{width:100%;}
+
+.leaflet-tile-pane{filter:grayscale(1) brightness(1.05) contrast(0.85);}
+
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+@media (max-width:480px){
+  #suburbTable th:nth-child(2), #suburbTable td:nth-child(2){ display:none; }
+}
+table{border-collapse:collapse;width:100%;font-size:.78rem;min-width:520px;}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+th{color:var(--sub);cursor:pointer;user-select:none;position:sticky;top:0;background:var(--card-bg);}
+th.sorted::after{content:" ▾";}
+th.sorted.asc::after{content:" ▴";}
+tbody tr{cursor:pointer;}
+tbody tr:hover{background:var(--bg);}
+
+.leaflet-popup-content{font-size:.82rem;font-family:'Malgun Gothic', system-ui, sans-serif;line-height:1.5;min-width:180px;}
+.leaflet-popup-content b{font-size:.92rem;}
+.leaflet-popup-content a{color:var(--accent);}
+.leaflet-popup-content .small-sample{color:#c0392b;font-weight:600;}
+.uoa-icon{font-size:22px;line-height:22px;text-align:center;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));}
+.km-ring-label{background:rgba(255,255,255,.85);border-radius:4px;padding:1px 5px;font-size:.65rem;color:var(--sub);border:1px solid var(--border);white-space:nowrap;}
+
+footer.foot{text-align:center;font-size:.7rem;color:var(--sub);padding:4px 6px 0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section class="card" id="summaryCard">
+    <h1>오클랜드 렌트 감각 지도</h1>
+    <div class="meta-line" id="metaLine">불러오는 중...</div>
+    <div class="bed-tiles" id="bedTiles"></div>
+    <div class="dist-bars" id="distBars"></div>
+    <div class="caption" id="distCaption"></div>
+  </section>
+
+  <section class="card" id="controlsCard">
+    <div class="row-label"><span>침실 수</span></div>
+    <div class="seg" id="segBeds">
+      <button data-beds="1">1베드</button>
+      <button data-beds="2" class="active">2베드</button>
+      <button data-beds="3">3베드</button>
+    </div>
+
+    <div class="row-label"><span>색 기준</span></div>
+    <div class="seg" id="segColor">
+      <button data-color="rent" class="active">렌트</button>
+      <button data-color="commute">통근시간</button>
+    </div>
+
+    <div class="row-label"><span>최대 렌트</span><b id="maxRentVal">$650/주</b></div>
+    <div class="slider-row">
+      <input type="range" id="maxRent" min="300" max="1000" step="25" value="650">
+    </div>
+
+    <div class="row-label"><span>최대 통근</span><b id="maxCommuteVal">45분</b></div>
+    <div class="slider-row">
+      <input type="range" id="maxCommute" min="10" max="90" step="5" value="45">
+    </div>
+
+    <label class="check-row"><input type="checkbox" id="showListings"> 개별 매물 점 보기</label>
+
+    <div class="filter-result" id="filterResult">계산 중...</div>
+  </section>
+
+  <section class="card map-card">
+    <div id="map"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <section class="card table-card">
+    <div class="row-label"><span>필터 통과 동네 (행 클릭 시 지도 이동)</span></div>
+    <div class="table-scroll">
+      <table id="suburbTable">
+        <thead>
+          <tr>
+            <th data-key="name">동네</th>
+            <th data-key="district">구</th>
+            <th data-key="median">중위($)</th>
+            <th data-key="n">n</th>
+            <th data-key="commute" class="sorted asc">통근(분)</th>
+            <th data-key="modes">수단</th>
+            <th data-key="km">직선km</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot" id="footNote"></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+// 단일 방향 순차 색상(중간에 흰색/파스텔 없이 5단계 모두 또렷하게). 저 -> 고.
+var RENT_SCALE = ["#0c2c84","#225ea8","#1d91c0","#41b6c4","#7fcdbb"];
+var COMMUTE_SCALE = ["#800026","#bd0026","#e31a1c","#fc4e2a","#fd8d3c"];
+var BED_LABEL = {"1":"1베드","2":"2베드","3":"3베드"};
+var TYPE_LABEL = {"H":"주택","A":"아파트","T":"타운하우스","U":"유닛","O":"기타"};
+var MODE_LABEL = {"BUS":"버스","HEAVY_RAIL":"기차","RAIL":"기차","COMMUTER_TRAIN":"기차",
+                   "METRO_RAIL":"기차","SUBWAY":"기차","FERRY":"페리","WALK":"도보"};
+function modeLabel(m){ return MODE_LABEL[m] || "기타"; }
+
+var state = {beds:"2", colorBy:"rent", maxRent:650, maxCommute:45, showListings:false,
+             sortKey:"commute", sortAsc:true};
+var DATA = null;
+var map, uoaMarker, suburbLayer, listingLayer, ringLayer;
+var suburbMarkers = {}; // id -> {marker, suburb}
+
+function slugify(s){ return String(s).toLowerCase().trim().replace(/\s+/g,"-"); }
+function suburbUrl(s){
+  return "https://www.trademe.co.nz/a/property/residential/rent/auckland/" +
+    slugify(s.district) + "/" + slugify(s.name);
+}
+function listingUrl(id){ return "https://www.trademe.co.nz/Browse/Listing.aspx?id=" + id; }
+
+function fmtNZD(v){ return v==null ? "-" : ("$" + v); }
+
+// ---- 색상 척도: 유효 값들의 5분위(quintile) 경계로 이산화 ----
+function buildBreaks(values){
+  var v = values.filter(function(x){ return x!=null; }).slice().sort(function(a,b){return a-b;});
+  if(v.length < 5) return null;
+  var breaks = [];
+  for(var i=1;i<5;i++){
+    var idx = Math.floor(v.length * i / 5);
+    breaks.push(v[Math.min(idx, v.length-1)]);
+  }
+  return breaks; // 4 cut points -> 5 bins
+}
+function binIndex(val, breaks){
+  if(!breaks) return 2;
+  for(var i=0;i<breaks.length;i++){ if(val <= breaks[i]) return i; }
+  return breaks.length;
+}
+
+function colorFor(value, breaks, scale){
+  if(value == null) return "#c9ccd1";
+  return scale[binIndex(value, breaks)];
+}
+
+function suburbMedian(s){
+  var b = s.beds[state.beds];
+  return b ? b.median : null;
+}
+function suburbCommuteMin(s){
+  return (s.commute && s.commute.transit_min != null) ? s.commute.transit_min : null;
+}
+function suburbN(s){
+  return s.n_by_bed[state.beds] || 0;
+}
+
+function passesFilter(s){
+  var med = suburbMedian(s);
+  var cm = suburbCommuteMin(s);
+  if(med == null) return false;
+  if(med > state.maxRent) return false;
+  if(cm == null) return false;
+  if(cm > state.maxCommute) return false;
+  return true;
+}
+
+function render(){
+  renderSummary();
+  renderControlsLabels();
+  renderMap();
+  renderTable();
+}
+
+function renderSummary(){
+  var s = DATA.summary;
+  document.getElementById("metaLine").innerHTML =
+    "기준: <b>" + DATA.dest.name + "</b> · 매물 <b>" + s.n_total.toLocaleString() + "건</b> · " +
+    "데이터 " + s.snapshot_date + " · 통근기준 " + s.commute_basis + " 대중교통";
+
+  var tiles = "";
+  ["1","2","3"].forEach(function(k){
+    var b = s.beds[k];
+    tiles += '<div class="bed-tile"><div class="label">' + BED_LABEL[k] + '</div>' +
+      '<div class="median">' + (b ? fmtNZD(b.median) : "-") + '</div>' +
+      '<div class="range">' + (b ? (fmtNZD(b.p25) + "–" + fmtNZD(b.p75)) : "표본 부족") + '</div></div>';
+  });
+  document.getElementById("bedTiles").innerHTML = tiles;
+
+  var bands = s.distance_bands;
+  var maxMedian = Math.max.apply(null, bands.map(function(b){ return b.median || 0; })) || 1;
+  var barsHtml = "";
+  bands.forEach(function(b){
+    var pct = b.median ? Math.round(100 * b.median / maxMedian) : 0;
+    barsHtml += '<div class="dist-row"><span class="rlabel">' + b.range_km + 'km</span>' +
+      '<span class="bar-track"><span class="bar-fill" style="width:' + pct + '%"></span></span>' +
+      '<span class="rval">' + (b.median ? fmtNZD(b.median) + "(n" + b.n + ")" : "표본부족") + '</span></div>';
+  });
+  document.getElementById("distBars").innerHTML = barsHtml;
+
+  var v = s.distance_price_verdict;
+  var cap;
+  var part1 = v.part1_pct, part2 = v.part2_pct;
+  function dirWord(pct){ return pct >= 0 ? "저렴" : "비쌈"; }
+  if(part1 == null && part2 == null){
+    cap = "거리 구간별 표본이 부족해 판정을 보류합니다.";
+  } else {
+    var seg1 = part1 != null
+      ? ("도심(0-3km) → 10-15km: 약 " + Math.abs(part1) + "% " + dirWord(part1))
+      : "도심(0-3km) → 10-15km: 표본 부족";
+    var seg2 = part2 != null
+      ? ("그 이후(10-15km → 30km+): 약 " + Math.abs(part2) + "% 추가로 " + dirWord(part2) + " (" + v.part2_label + ")")
+      : "그 이후(10-15km → 30km+): 표본 부족";
+    cap = seg1 + " / " + seg2;
+  }
+  document.getElementById("distCaption").textContent = cap;
+
+  document.getElementById("footNote").textContent =
+    "데이터: TradeMe 렌트 매물 스냅샷 · 생성: " + (DATA.generated || "").slice(0,16).replace("T"," ");
+}
+
+function renderControlsLabels(){
+  document.getElementById("maxRentVal").textContent = "$" + state.maxRent + "/주";
+  document.getElementById("maxCommuteVal").textContent = state.maxCommute + "분";
+}
+
+function radiusFor(n, maxN){
+  if(!n) return 3;
+  var r = 4 + 12 * Math.sqrt(n / Math.max(1,maxN));
+  return Math.max(4, Math.min(16, r));
+}
+
+function popupHtml(s){
+  var med = suburbMedian(s);
+  var b = s.beds[state.beds];
+  var lines = [];
+  lines.push("<b>" + s.name + "</b> · " + s.district);
+  if(b){
+    lines.push(BED_LABEL[state.beds] + " 중위 " + fmtNZD(b.median) + " (" + fmtNZD(b.p25) + "–" + fmtNZD(b.p75) + ", n=" + b.n + ")");
+  } else {
+    lines.push('<span class="small-sample">' + BED_LABEL[state.beds] + " 표본 적음(n<3)</span>");
+  }
+  var others = ["1","2","3"].filter(function(k){ return k !== state.beds; });
+  var otherLine = others.map(function(k){
+    var ob = s.beds[k];
+    return BED_LABEL[k] + " " + (ob ? fmtNZD(ob.median) : "-");
+  }).join(" · ");
+  lines.push(otherLine);
+
+  var c = s.commute;
+  if(c && c.transit_min != null){
+    var modes = (c.modes||[]).map(modeLabel).join("→") || "도보";
+    lines.push("통근 " + c.transit_min + "분 (" + modes + ", 환승 " + c.transfers + "회, 도보 " + c.walk_min + "분)");
+  } else if(c && c.walk_only_min != null){
+    if(c.walk_only_min > 60){
+      lines.push("대중교통 경로 없음 · 차 " + (c.drive_min != null ? c.drive_min + "분" : "정보 없음"));
+    } else {
+      lines.push("대중교통 경로 없음 · 도보 " + c.walk_only_min + "분");
+    }
+  } else {
+    lines.push("통근 정보 없음");
+  }
+  if(c && c.drive_min != null && !(c.walk_only_min != null && c.walk_only_min > 60)){
+    lines.push("차 " + c.drive_min + "분 (참고)");
+  }
+  lines.push("UoA 직선 " + s.km_uoa + "km");
+  lines.push('<a href="' + suburbUrl(s) + '" target="_blank" rel="noopener">TradeMe에서 이 동네 매물 보기 →</a>');
+  return lines.join("<br>");
+}
+
+function listingPopupHtml(row){
+  // [id, lat, lng, rent, beds, suburbIdx, type, thumb]
+  var id=row[0], rent=row[3], beds=row[4], type=row[6], thumb=row[7];
+  var imgHtml = thumb ? '<img src="'+thumb+'" style="width:100%;border-radius:6px;margin-bottom:6px;">' : "";
+  return imgHtml + "주간 $" + rent + " · " + beds + "베드 · " + (TYPE_LABEL[type]||type) + "<br>" +
+    '<a href="' + listingUrl(id) + '" target="_blank" rel="noopener">TradeMe 매물 보기 →</a>';
+}
+
+function initMap(){
+  // 임시 초기 뷰: Leaflet은 지도가 한 번 로드된(뷰가 설정된) 뒤에야 벡터 레이어의
+  // getBounds()가 동작한다(비어있는 상태에서 호출하면 내부 투영 계산이 깨짐).
+  // 아래에서 15km 링 기준으로 fitBounds를 다시 걸어 덮어쓴다.
+  map = L.map("map", {preferCanvas:true}).setView([DATA.dest.lat, DATA.dest.lng], 11);
+  // 명세는 CARTO Positron(basemaps.cartocdn.com)을 지정했으나, 실측 결과(curl) 현재 무료 익명
+  // 호출이 막혀 전 타일에 "API KEY REQUIRED" 워터마크가 찍힌다(2026-09-24 확인, README 참조).
+  // 키 없이 쓸 수 있는 OpenStreetMap 표준 타일로 대체하고, 정보 밀도를 낮추려고
+  // 타일 pane에만 흑백/저채도 CSS 필터를 적용(범례 마커 색은 원색 유지, 대비 확보).
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: "abc", maxZoom: 19
+  }).addTo(map);
+
+  var uoaIcon = L.divIcon({className:"", html:'<div class="uoa-icon">🎓</div>', iconSize:[24,24], iconAnchor:[12,12]});
+  uoaMarker = L.marker([DATA.dest.lat, DATA.dest.lng], {icon:uoaIcon, zIndexOffset:1000})
+    .addTo(map).bindPopup("<b>" + DATA.dest.name + "</b><br>기준 목적지");
+
+  ringLayer = L.layerGroup().addTo(map);
+  var outerRing = null;
+  [5,10,15].forEach(function(km){
+    var circle = L.circle([DATA.dest.lat, DATA.dest.lng], {
+      radius: km*1000, color:"#5f6570", weight:1, dashArray:"4,6", fill:false, interactive:false
+    }).addTo(ringLayer);
+    if(km === 15) outerRing = circle;
+    var pt = destOffset(DATA.dest.lat, DATA.dest.lng, km);
+    L.marker(pt, {icon: L.divIcon({className:"", html:'<div class="km-ring-label">' + km + 'km</div>', iconSize:[40,16], iconAnchor:[20,8]}), interactive:false}).addTo(ringLayer);
+  });
+
+  // 초기 화면에 15km 링(수도권 전체 맥락)이 다 보이도록 맞춤
+  if(outerRing){
+    map.fitBounds(outerRing.getBounds(), {padding:[8,8]});
+  } else {
+    map.setView([DATA.dest.lat, DATA.dest.lng], 11);
+  }
+
+  suburbLayer = L.layerGroup().addTo(map);
+  listingLayer = L.layerGroup();
+}
+
+// 위도 1도 ~ 111km 근사로 링 라벨을 정북쪽에 배치
+function destOffset(lat, lng, km){
+  return [lat + km/111.0, lng];
+}
+
+function renderMap(){
+  suburbLayer.clearLayers();
+  suburbMarkers = {};
+
+  var medians = DATA.suburbs.map(function(s){ return suburbMedian(s); });
+  var commutes = DATA.suburbs.map(function(s){ return suburbCommuteMin(s); });
+  var rentBreaks = buildBreaks(medians);
+  var commuteBreaks = buildBreaks(commutes);
+  var maxN = Math.max.apply(null, DATA.suburbs.map(function(s){ return suburbN(s); })) || 1;
+
+  DATA.suburbs.forEach(function(s){
+    var n = suburbN(s);
+    var med = suburbMedian(s);
+    var cm = suburbCommuteMin(s);
+    var pass = passesFilter(s);
+    var hollow = (med == null); // 선택 침실 n<3
+    var value = state.colorBy === "rent" ? med : cm;
+    var breaks = state.colorBy === "rent" ? rentBreaks : commuteBreaks;
+    var scale = state.colorBy === "rent" ? RENT_SCALE : COMMUTE_SCALE;
+    // 필터 밖 = 흐리게 하되 회색 배경 타일 위에서도 또렷이 구분되게(전체 지형은 계속 보여야 함)
+    var color = pass ? colorFor(value, breaks, scale) : "#4a4f57";
+    var strokeOpacity = pass ? 0.9 : 0.55;
+    var fillOpacity = hollow ? 0 : (pass ? 0.75 : 0.12);
+    var radius = radiusFor(n, maxN);
+
+    var marker = L.circleMarker([s.lat, s.lng], {
+      radius: radius, color: color, weight: hollow ? 1.5 : 1,
+      fillColor: color, fillOpacity: fillOpacity, opacity: strokeOpacity
+    }).addTo(suburbLayer);
+    marker.bindPopup(popupHtml(s));
+    marker.on("click", function(){ highlightRow(s.id); });
+    suburbMarkers[s.id] = {marker:marker, suburb:s};
+  });
+
+  renderLegend(rentBreaks, commuteBreaks);
+  renderListingsLayer();
+
+  var passCount = DATA.suburbs.filter(passesFilter).length;
+  var bedNumForCount = parseInt(state.beds, 10);
+  var listingCount = 0;
+  DATA.listings.forEach(function(row){
+    if(row[4] !== bedNumForCount) return;
+    if(row[3] > state.maxRent) return;
+    var s = DATA.suburbs[row[5]];
+    if(s && passesFilter(s)) listingCount++;
+  });
+  document.getElementById("filterResult").textContent =
+    "조건 맞는 동네 " + passCount + "곳 / 매물 " + listingCount.toLocaleString() + "건";
+}
+
+function renderListingsLayer(){
+  listingLayer.clearLayers();
+  if(!state.showListings) { map.removeLayer(listingLayer); return; }
+  var bedNum = parseInt(state.beds, 10);
+  DATA.listings.forEach(function(row){
+    if(row[4] !== bedNum) return;
+    if(row[3] > state.maxRent) return;
+    var s = DATA.suburbs[row[5]];
+    if(s && s.commute && s.commute.transit_min != null && s.commute.transit_min > state.maxCommute) return;
+    var dot = L.circleMarker([row[1], row[2]], {
+      radius: 2, color: "#1a73e8", weight: 0, fillColor:"#1a73e8", fillOpacity: 0.85
+    });
+    dot.bindPopup(listingPopupHtml(row));
+    dot.addTo(listingLayer);
+  });
+  if(!map.hasLayer(listingLayer)) listingLayer.addTo(map);
+}
+
+function legendLabels(breaks, isRent){
+  if(!breaks) return null;
+  var v = breaks.map(function(x){ return Math.round(x); });
+  if(isRent){
+    return ["≤$" + v[0], "$" + v[0] + "–" + v[1], "$" + v[1] + "–" + v[2], "$" + v[2] + "–" + v[3], "$" + v[3] + "+"];
+  }
+  return ["≤" + v[0] + "분", v[0] + "–" + v[1] + "분", v[1] + "–" + v[2] + "분", v[2] + "–" + v[3] + "분", v[3] + "+분"];
+}
+
+function renderLegend(rentBreaks, commuteBreaks){
+  var isRent = state.colorBy === "rent";
+  var breaks = isRent ? rentBreaks : commuteBreaks;
+  var scale = isRent ? RENT_SCALE : COMMUTE_SCALE;
+  var title = isRent ? "렌트(저→고)" : "통근시간(짧음→김)";
+  var labels = legendLabels(breaks, isRent);
+  var html = '<div class="lg-item lg-title"><b>' + title + '</b></div>';
+  if(labels){
+    scale.forEach(function(c,i){
+      html += '<div class="lg-item"><span class="sw" style="background:' + c + '"></span><span>' + labels[i] + '</span></div>';
+    });
+  } else {
+    html += '<div class="lg-item">색상 구간 계산 불가(표본 부족)</div>';
+  }
+  html += '<div class="lg-item">회색=필터 밖 · 속빈원=표본 n&lt;3</div>';
+  document.getElementById("legend").innerHTML = html;
+}
+
+// ---- 하단 표 ----
+function tableRows(){
+  return DATA.suburbs.filter(passesFilter).map(function(s){
+    var b = s.beds[state.beds];
+    var c = s.commute || {};
+    return {
+      id: s.id, name: s.name, district: s.district,
+      median: b ? b.median : null, n: b ? b.n : 0,
+      commute: c.transit_min != null ? c.transit_min : Infinity,
+      modes: (c.modes||[]).map(modeLabel).join("→"), km: s.km_uoa
+    };
+  });
+}
+
+function renderTable(){
+  var rows = tableRows();
+  rows.sort(function(a,b){
+    var av = a[state.sortKey], bv = b[state.sortKey];
+    if(av == null) av = -Infinity;
+    if(bv == null) bv = -Infinity;
+    if(av < bv) return state.sortAsc ? -1 : 1;
+    if(av > bv) return state.sortAsc ? 1 : -1;
+    return 0;
+  });
+  var tbody = document.querySelector("#suburbTable tbody");
+  tbody.innerHTML = rows.map(function(r){
+    return "<tr data-id='" + r.id + "'>" +
+      "<td>" + r.name + "</td><td>" + r.district + "</td>" +
+      "<td>" + (r.median!=null ? fmtNZD(r.median) : "-") + "</td>" +
+      "<td>" + r.n + "</td>" +
+      "<td>" + (isFinite(r.commute) ? r.commute : "-") + "</td>" +
+      "<td>" + (r.modes || "-") + "</td>" +
+      "<td>" + r.km + "</td></tr>";
+  }).join("");
+  Array.prototype.forEach.call(tbody.querySelectorAll("tr"), function(tr){
+    tr.addEventListener("click", function(){
+      var id = parseInt(tr.getAttribute("data-id"), 10);
+      var rec = suburbMarkers[id];
+      if(rec){
+        map.flyTo(rec.marker.getLatLng(), 13);
+        rec.marker.openPopup();
+      }
+    });
+  });
+}
+
+function highlightRow(id){
+  var tr = document.querySelector("#suburbTable tr[data-id='" + id + "']");
+  if(tr) tr.scrollIntoView({block:"nearest"});
+}
+
+function bindEvents(){
+  document.querySelectorAll("#segBeds button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll("#segBeds button").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      state.beds = btn.getAttribute("data-beds");
+      render();
+    });
+  });
+  document.querySelectorAll("#segColor button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll("#segColor button").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      state.colorBy = btn.getAttribute("data-color");
+      renderMap();
+    });
+  });
+  document.getElementById("maxRent").addEventListener("input", function(e){
+    state.maxRent = parseInt(e.target.value, 10);
+    renderControlsLabels();
+    renderMap(); renderTable();
+  });
+  document.getElementById("maxCommute").addEventListener("input", function(e){
+    state.maxCommute = parseInt(e.target.value, 10);
+    renderControlsLabels();
+    renderMap(); renderTable();
+  });
+  document.getElementById("showListings").addEventListener("change", function(e){
+    state.showListings = e.target.checked;
+    renderListingsLayer();
+  });
+  document.querySelectorAll("#suburbTable th").forEach(function(th){
+    th.addEventListener("click", function(){
+      var key = th.getAttribute("data-key");
+      if(state.sortKey === key){
+        state.sortAsc = !state.sortAsc;
+      } else {
+        state.sortKey = key; state.sortAsc = true;
+      }
+      document.querySelectorAll("#suburbTable th").forEach(function(h){ h.classList.remove("sorted","asc"); });
+      th.classList.add("sorted"); if(state.sortAsc) th.classList.add("asc");
+      renderTable();
+    });
+  });
+}
+
+fetch("data.json").then(function(r){ return r.json(); }).then(function(json){
+  DATA = json;
+  initMap();
+  bindEvents();
+  render();
+}).catch(function(err){
+  document.getElementById("metaLine").textContent = "data.json 로드 실패: " + err;
+});
+
+})();
+</script>
+</body>
+</html>
