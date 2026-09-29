@@ -1,246 +1,866 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>처가 숙소 룩북</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Malgun Gothic','Segoe UI',system-ui,sans-serif;background:#f0f2f5;padding:12px;font-size:14px;color:#1a1a1a;max-width:980px;margin:0 auto}
-h1{font-size:1.3rem;margin:4px 0 4px}
-.sub{font-size:.82rem;color:#666;margin-bottom:12px;line-height:1.6}
-.panel{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1);padding:13px 15px;margin-bottom:12px}
-.panel h2{font-size:1rem;margin-bottom:8px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:14px;background:#e8f0fe;color:#1a56c4}
-.chip.g{background:#e6f4ea;color:#1e7e34}.chip.r{background:#fdecea;color:#c0392b}.chip.y{background:#fff3cd;color:#856404}
-table{width:100%;border-collapse:collapse;font-size:.8rem}
-th,td{padding:6px 7px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}
-th{color:#888;font-weight:700;font-size:.74rem;background:#fafbfc}
-td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ok{color:#1e7e34;font-weight:700}.bad{color:#c0392b;font-weight:700}.warn{color:#b26a00;font-weight:700}
-.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1);margin-bottom:14px}
-.strip{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;background:#111}
-.strip a{flex:0 0 auto;scroll-snap-align:start}
-.strip img{height:230px;display:block}
-.chead{padding:12px 15px 6px}
-.top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.rank{font-size:.95rem;font-weight:800;color:#fff;background:#1a1a1a;border-radius:8px;padding:3px 9px}
-.rank.alt{background:#888}
-.name{font-size:1.1rem;font-weight:800}
-.price{margin-left:auto;font-size:1.35rem;font-weight:800}.price i{font-size:.7rem;color:#999;font-style:normal;font-weight:400}
-.addr{font-size:.78rem;color:#777;margin-top:3px}
-.badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
-.badge{padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;white-space:nowrap}
-.b-ok{background:#d4edda;color:#155724}.b-info{background:#e8f0fe;color:#1a56c4}.b-warn{background:#fff3cd;color:#856404}.b-bad{background:#fdecea;color:#c0392b}
-.taxi{margin:9px 15px 4px;background:#f6f8fa;border-left:3px solid #1a73e8;border-radius:0 7px 7px 0;padding:8px 11px;font-size:.86rem;line-height:1.55}
-.taxi b{color:#1a73e8;font-size:1.05rem}
-.oneliner{margin:8px 15px 4px;font-size:.86rem;line-height:1.55;background:#f6f8fa;border-left:3px solid #34a853;padding:7px 10px;border-radius:0 7px 7px 0;font-weight:600;color:#333}
-details{margin:8px 15px 12px;border:1px solid #e8ebf0;border-radius:9px;overflow:hidden}
-summary{padding:9px 13px;font-weight:700;font-size:.84rem;cursor:pointer;background:#f8f9fb;color:#1a73e8;list-style:none}
-summary::-webkit-details-marker{display:none}
-.dbody{padding:6px 13px 12px;font-size:.82rem;line-height:1.6}
-.dbody ul{padding-left:18px}
-.sectit{font-size:.74rem;font-weight:800;color:#999;margin:10px 0 5px;letter-spacing:.5px}
-.route img{width:100%;border-radius:8px;border:1px solid #e8ebf0;display:block;margin-top:6px}
-.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
-.mini .strip img{height:150px}
-.note{font-size:.74rem;color:#888;line-height:1.6}
-a.lnk{color:#1a73e8;text-decoration:none}
-ol.steps{padding-left:20px;font-size:.84rem;line-height:1.8}
-@media(max-width:560px){.strip img{height:180px}.price{margin-left:0;width:100%}}
-</style>
-</head>
-<body>
+h1{font-size:1.3rem;margin:4px 0}
+.sub{font-size:.8rem;color:#666;line-height:1.65;margin-bottom:10px}
+.panel{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1);padding:12px 14px;margin-bottom:12px}
+.panel h2{font-size:.98rem;margin-bottom:7px}
+.controls{position:sticky;top:0;z-index:5;background:#fff;padding:9px 12px;border-radius:10px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.btn{padding:5px 12px;border:1.5px solid #ccc;border-radius:20px;cursor:pointer;font-size:.8rem;background:#fff}
+.btn.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+#q{padding:5px 10px;border:1.5px solid #ccc;border-radius:20px;font-size:.82rem;width:170px;outline:none}
+#cnt{font-size:.8rem;color:#888;margin-left:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.strip{display:flex;gap:3px;overflow-x:auto;background:#222;height:170px;scroll-snap-type:x mandatory}
+.strip img{height:170px;flex:0 0 auto;scroll-snap-align:start}
+.noimg{color:#999;margin:auto;font-size:.8rem}
+.body{padding:10px 12px 11px}
+.top{display:flex;gap:7px;align-items:baseline}
+.rk{font-size:.75rem;font-weight:800;color:#fff;background:#1a1a1a;border-radius:6px;padding:1px 7px}
+.nm{font-weight:800;font-size:.98rem;flex:1;min-width:0}
+.price{font-size:1.15rem;font-weight:800;white-space:nowrap}.price i{font-size:.7rem;color:#999;font-style:normal;font-weight:400}
+.addr{font-size:.74rem;color:#888;margin-top:2px}
+.row{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;align-items:center}
+.taxi{font-size:.76rem;font-weight:700;padding:2px 8px;border-radius:10px}
+.t-g{background:#e6f4ea;color:#1e7e34}.t-o{background:#e8f0fe;color:#1a56c4}.t-w{background:#fff3cd;color:#856404}
+.pp{font-size:.72rem;color:#666;background:#f4f5f7;border-radius:8px;padding:2px 7px}.pp.best{background:#1a73e8;color:#fff;font-weight:700}
+.room{font-size:.76rem;color:#444;margin-top:7px;line-height:1.5}
+.warn{color:#b26a00}
+.note2{font-size:.76rem;margin-top:6px;background:#f6f8fa;border-left:3px solid #34a853;padding:5px 8px;border-radius:0 6px 6px 0;line-height:1.5}
+.bds{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.bd{font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:9px;background:#f1f3f4;color:#555}
+.bd.ok{background:#d4edda;color:#155724}.bd.info{background:#e8f0fe;color:#1a56c4}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th,td{padding:5px 6px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}
+th{color:#888;font-size:.72rem;background:#fafbfc}td.n{text-align:right;white-space:nowrap}
+.note{font-size:.74rem;color:#777;line-height:1.65}
+</style></head><body>
+<h1>🏨 처가 숙소 룩북 — 2026-11-07(토) 1박 · 3인</h1>
+<div class="sub">장인·장모·처남 3인 · 11/8(일) <b>07:00 레노스블랑쉬</b>(성동구 고산자로 202) · 베네피아 제휴몰 조회 2026-09-29 밤<br>
+조건: <b>3인 1실 60만 원 이하 · 모텔 제외 · 식장까지 택시 20분 이내</b> → <b>99곳</b>(15분 이내 47곳) · <b>가격순</b></div>
 
-<h1>🏨 처가 숙소 룩북 — 2026-11-07(토) 1박</h1>
-<div class="sub">장인·장모·처남 3인 · 11/8(일) <b>07:00까지 레노스블랑쉬</b>(성동구 고산자로 202) 도착 · 베네피아 제휴몰 9곳 비교 · 조사 2026-09-29<br>
-가격은 전부 <b>11/7 1박·성인 3명</b>으로 실제 조회한 값(세금 포함, 조식 불포함). 결제는 베네피아 포인트 전제.</div>
+<div class="panel"><h2>어떻게 골랐나</h2><div class="note">
+· <b>가격</b>: 베네피아 '국내숙박 전문관'(투어비스)과 '호텔패스'에서 11/7 1박·성인 3명으로 조회. 둘 중 싼 값을 크게, 둘 다 있으면 나란히 표시(파란 칸이 최저). 세금 포함, 조식 제외. 투어비스는 3인 객실 단위 요금, 호텔패스는 '3인 투숙 가능 객실' 목록 최저가(상세요금에서 더 낮을 수 있음).<br>
+· <b>범위</b>: 투어비스는 성동·중구·동대문·종로·광진·성북·중랑 7개 구 전체, 호텔패스는 동대문·명동·시청·종로·서울역·잠실/코엑스 권역. 트립토파즈·여기어때(베네피아관)·웹투어는 앞선 조사에서 같은 호텔이 같거나 더 비싸서 제외. 플러스앤은 신규예약 중단.<br>
+· <b>모텔 제외</b>: ① 카카오맵 분류 '여관·모텔' ② 투어비스 분류 모텔·게스트하우스·호스텔 ③ 여기어때에서 <b>대실</b> 판매 — 하나라도 해당하면 제외(아래 목록). 여기어때 검색이 동명 다른 업소를 잡은 2건(밀리오레 서울·퍼시픽 호텔)은 직접 확인해 살렸다.<br>
+· <b>택시</b>: 카카오맵 자동차 길찾기(실시간 교통)를 9/29(화) 자정 무렵 조회. 카카오·네이버 웹에서 11/8 06:30 미래 출발 지정이 안 돼 한산한 밤 시간으로 대신 측정. 06:30은 심야할증(22~04시)이 없다. 🟢12분 이하 🔵15분 이하 🟡20분 이하.<br>
+· 사진: 투어비스(Expedia 이미지)·카카오맵. 요금·잔여객실은 조회 시점 기준이라 바뀔 수 있다.
+</div></div>
 
-<div class="panel">
-  <h2>한눈에</h2>
-  <div class="chips" style="margin-bottom:9px">
-    <span class="chip g">1순위 밀리오레 서울(동대문) 209,720원 · 택시 11분</span>
-    <span class="chip">2순위 현대 레지던스 232,260원~ · 택시 13분</span>
-    <span class="chip y">호텔패스가 동일 호텔 최저가</span>
-    <span class="chip r">플러스앤 숙박 신규예약 중단</span>
-  </div>
-  <table>
-    <tr><th>호텔</th><th>등급</th><th>3인 객실</th><th class="n">최저가</th><th class="n">택시</th><th>무료취소</th></tr>
-    <tr><td><b>호텔 밀리오레 서울</b> (동대문 DDP)</td><td>2성</td><td>슈페리어 트리플 (더블+싱글)</td><td class="n"><b>209,720</b></td><td class="n">11분</td><td>~10/30 16시</td></tr>
-    <tr><td><b>현대 레지던스 서울</b> (충무로)</td><td>3성</td><td>싱글 3개 트리플 / 더블+트윈</td><td class="n"><b>232,260~</b></td><td class="n">13분</td><td>~10/30 16시</td></tr>
-    <tr><td>서울앤호텔 동대문 (창신동)</td><td>3성</td><td>3인 목록가</td><td class="n">318,000~</td><td class="n">10분</td><td>—</td></tr>
-    <tr><td>호텔 코지 명동</td><td>3성</td><td>3인 목록가</td><td class="n">295,000~</td><td class="n warn">16분</td><td>—</td></tr>
-    <tr><td>호텔 루미아 명동</td><td>3성</td><td>패밀리트윈(최대3)</td><td class="n">301,000~</td><td class="n warn">16분</td><td>—</td></tr>
-    <tr><td>더 스테이 클래식 명동</td><td>4성</td><td>3인 목록가</td><td class="n">291,000~</td><td class="n bad">19분</td><td>—</td></tr>
-  </table>
-  <div class="note" style="margin-top:6px">참고: 처음 보신 소테츠 스프라지르 동대문은 3인 44~49만 원.</div>
+<div class="controls">
+ <button class="btn active" data-f="all">전체</button><button class="btn" data-f="15">택시 15분 이내</button><button class="btn" data-f="12">12분 이내</button>
+ <button class="btn" data-p="300000">30만 이하</button><button class="btn" data-p="400000">40만 이하</button>
+ <input id="q" placeholder="호텔명 검색"><span id="cnt"></span>
+</div>
+<div class="cards" id="cards">
+<div class="card" data-taxi="11" data-p="219520" data-n="호텔 밀리오레 서울">
+<div class="strip"><img loading="lazy" src="h/80299df8_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">1</span><span class="nm">호텔 밀리오레 서울</span><span class="price">219,520<i>원</i></span></div>
+ <div class="addr">서울 중구 장충단로 263 14,19-20층</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 3.7km · 9,900원</span><span class='pp best'>호텔패스 219,520</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div><div class='note2'>직접 묵어 본 곳 · 호텔패스 상세요금 SUPERIOR TRIPLE <b>209,720</b>(22:57 확인, 목록가보다 낮음) · 투어비스는 3인 매진 · 대형 더블+싱글 · 24시간 프런트</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★2.5 (4)</span></div>
+</div></div><div class="card" data-taxi="9" data-p="223440" data-n="라비타 호텔 잠실">
+<div class="strip"><img loading="lazy" src="h/3a962e54_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">2</span><span class="nm">라비타 호텔 잠실</span><span class="price">223,440<i>원</i></span></div>
+ <div class="addr">서울 강남구 영동대로 712</div>
+ <div class="row"><span class="taxi t-g">🚕 9분 · 6.1km · 11,800원</span><span class='pp best'>호텔패스 223,440</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★1.6 (19)</span></div>
+</div></div><div class="card" data-taxi="12" data-p="236180" data-n="현대 레지던스 서울">
+<div class="strip"><img loading="lazy" src="h/72823e77_0.jpg" alt=""><img loading="lazy" src="h/72823e77_1.jpg" alt=""><img loading="lazy" src="h/72823e77_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">3</span><span class="nm">현대 레지던스 서울</span><span class="price">236,180<i>원</i></span></div>
+ <div class="addr">서울 중구 마른내로12길 7-4</div>
+ <div class="row"><span class="taxi t-g">🚕 12분 · 4.3km · 10,900원</span><span class='pp best'>호텔패스 236,180</span><span class='pp'>투어비스 245,551</span></div>
+ <div class='room'>🛏 디럭스 트리플룸 (Deluxe Triple Room) · 무료취소 ~10/30 · 잔여 1실</div><div class='note2'>호텔패스 상세: 더블+트윈 232,260 / 싱글 3개 트리플 241,080 · 처남 개별 침대 필요 시 추천</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 레지던스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.6 (15)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="245980" data-n="로사나 호텔">
+<div class="strip"><img loading="lazy" src="h/4cce1c3e_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">4</span><span class="nm">로사나 호텔</span><span class="price">245,980<i>원</i></span></div>
+ <div class="addr">서울 송파구 삼학사로 98</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 9.8km · 16,100원</span><span class='pp best'>호텔패스 245,980</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.4 (46)</span></div>
+</div></div><div class="card" data-taxi="13" data-p="246960" data-n="글로벌 씨티데이즈 인 동대문">
+<div class="strip"><img loading="lazy" src="h/344c16b8_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">5</span><span class="nm">글로벌 씨티데이즈 인 동대문</span><span class="price">246,960<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로48길 12 나라빌딩</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 3.6km · 10,800원</span><span class='pp best'>호텔패스 246,960</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★1.9 (12)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="275982" data-n="호텔 더 디자이너스 종로">
+<div class="strip"><img loading="lazy" src="h/19b3e550_0.jpg" alt=""><img loading="lazy" src="h/19b3e550_1.jpg" alt=""><img loading="lazy" src="h/19b3e550_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">6</span><span class="nm">호텔 더 디자이너스 종로</span><span class="price">275,982<i>원</i></span></div>
+ <div class="addr">서울 종로구 수표로 89-8</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,400원</span><span class='pp'>호텔패스 354,760</span><span class='pp best'>투어비스 275,982</span></div>
+ <div class='room'>🛏 Deluxe Family Twin/주차불가/랜덤배정(연박시 주중 3만원/주말 5만원 숙소문의) (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.8 (79)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="294971" data-n="호텔 코지 명동">
+<div class="strip"><img loading="lazy" src="h/43d6738e_0.jpg" alt=""><img loading="lazy" src="h/43d6738e_1.jpg" alt=""><img loading="lazy" src="h/43d6738e_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">7</span><span class="nm">호텔 코지 명동</span><span class="price">294,971<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문시장길 61</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.8km · 12,500원</span><span class='pp'>호텔패스 300,860</span><span class='pp best'>투어비스 294,971</span></div>
+ <div class='room'>🛏 Triple Room</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.7 (3)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="297293" data-n="하나데이즈 종로 광화문">
+<div class="strip"><img loading="lazy" src="h/8ef82929_0.jpg" alt=""><img loading="lazy" src="h/8ef82929_1.jpg" alt=""><img loading="lazy" src="h/8ef82929_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">8</span><span class="nm">하나데이즈 종로 광화문</span><span class="price">297,293<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로5길 32-5</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.2km · 12,800원</span><span class='pp best'>투어비스 297,293</span></div>
+ <div class='room'>🛏 디럭스 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="16" data-p="300860" data-n="루미아 호텔 명동">
+<div class="strip"><img loading="lazy" src="h/d5ebced4_0.jpg" alt=""><img loading="lazy" src="h/d5ebced4_1.jpg" alt=""><img loading="lazy" src="h/d5ebced4_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">9</span><span class="nm">루미아 호텔 명동</span><span class="price">300,860<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로8길 31-9</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.8km · 12,500원</span><span class='pp best'>호텔패스 300,860</span><span class='pp'>투어비스 323,677</span></div>
+ <div class='room'>🛏 Deluxe Twin Room(1 Double Bed and 1 Twin Bed)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★5 (2)</span></div>
+</div></div><div class="card" data-taxi="10" data-p="311469" data-n="서울앤호텔 동대문">
+<div class="strip"><img loading="lazy" src="h/a2bf7ee3_0.jpg" alt=""><img loading="lazy" src="h/a2bf7ee3_1.jpg" alt=""><img loading="lazy" src="h/a2bf7ee3_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">10</span><span class="nm">서울앤호텔 동대문</span><span class="price">311,469<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로66가길 21</div>
+ <div class="row"><span class="taxi t-g">🚕 10분 · 3.2km · 9,400원</span><span class='pp best'>투어비스 311,469</span></div>
+ <div class='room'>🛏 패밀리 트리플 · 무료취소 ~10/27 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.3 (29)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="313600" data-n="더 스테이 클래식 호텔 명동">
+<div class="strip"><img loading="lazy" src="h/42d962e2_0.jpg" alt=""><img loading="lazy" src="h/42d962e2_1.jpg" alt=""><img loading="lazy" src="h/42d962e2_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">11</span><span class="nm">더 스테이 클래식 호텔 명동</span><span class="price">313,600<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로 27</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 6.8km · 14,100원</span><span class='pp best'>호텔패스 313,600</span><span class='pp'>투어비스 351,500</span></div>
+ <div class='room'>🛏 Deluxe Twin (Double+single)</div>
+ <div class="bds"><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="19" data-p="315560" data-n="중랑 라코지스테이">
+<div class="strip"><img loading="lazy" src="h/2c5f6eb9_0.jpg" alt=""><img loading="lazy" src="h/2c5f6eb9_1.jpg" alt=""><img loading="lazy" src="h/2c5f6eb9_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">12</span><span class="nm">중랑 라코지스테이</span><span class="price">315,560<i>원</i></span></div>
+ <div class="addr">서울 중랑구 망우로 232</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 7.2km · 14,300원</span><span class='pp best'>호텔패스 315,560</span><span class='pp'>투어비스 326,432</span></div>
+ <div class='room'>🛏 Gallery Suite</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.8 (14)</span></div>
+</div></div><div class="card" data-taxi="14" data-p="315865" data-n="어반스테이 명동">
+<div class="strip"><img loading="lazy" src="h/95691db9_0.jpg" alt=""><img loading="lazy" src="h/95691db9_1.jpg" alt=""><img loading="lazy" src="h/95691db9_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">13</span><span class="nm">어반스테이 명동</span><span class="price">315,865<i>원</i></span></div>
+ <div class="addr">서울 중구 충무로 24</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 4.8km · 11,400원</span><span class='pp'>호텔패스 337,120</span><span class='pp best'>투어비스 315,865</span></div>
+ <div class='room'>🛏 스튜디오 패밀리 · 무료취소 ~09/22</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3 (3)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="318172" data-n="센트럴 투어리스트 호텔">
+<div class="strip"><img loading="lazy" src="h/898405e5_0.jpg" alt=""><img loading="lazy" src="h/898405e5_1.jpg" alt=""><img loading="lazy" src="h/898405e5_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">14</span><span class="nm">센트럴 투어리스트 호텔</span><span class="price">318,172<i>원</i></span></div>
+ <div class="addr">서울 종로구 청계천로 137</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.2km · 12,000원</span><span class='pp'>호텔패스 343,000</span><span class='pp best'>투어비스 318,172</span></div>
+ <div class='room'>🛏 Family Room</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>3성</span></div>
+</div></div><div class="card" data-taxi="13" data-p="324380" data-n="호텔 더 캐슬 잠실새내">
+<div class="strip"><img loading="lazy" src="h/cb8e0d98_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">15</span><span class="nm">호텔 더 캐슬 잠실새내</span><span class="price">324,380<i>원</i></span></div>
+ <div class="addr">서울 송파구 올림픽로12길 4-17</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 8.3km · 14,800원</span><span class='pp best'>호텔패스 324,380</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★2.1 (15)</span></div>
+</div></div><div class="card" data-taxi="7" data-p="343000" data-n="스테이 패스포트 신당 료칸">
+<div class="strip"><img loading="lazy" src="h/7567d868_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">16</span><span class="nm">스테이 패스포트 신당 료칸</span><span class="price">343,000<i>원</i></span></div>
+ <div class="addr">서울 중구 난계로11길 33</div>
+ <div class="row"><span class="taxi t-g">🚕 7분 · 2.4km · 8,300원</span><span class='pp best'>호텔패스 343,000</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd'>카카오 ★3.8 (19)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="343980" data-n="뉴천지호텔">
+<div class="strip"><img loading="lazy" src="h/b0e95aac_0.jpg" alt=""><img loading="lazy" src="h/b0e95aac_1.jpg" alt=""><img loading="lazy" src="h/b0e95aac_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">17</span><span class="nm">뉴천지호텔</span><span class="price">343,980<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로38길 20</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 4.0km · 10,400원</span><span class='pp best'>호텔패스 343,980</span><span class='pp'>투어비스 357,067</span></div>
+ <div class='room'>🛏 클래식 트윈룸(무료주차가능) (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>2성</span><span class='bd'>카카오 ★5 (2)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="345940" data-n="나포레 호텔">
+<div class="strip"><img loading="lazy" src="h/a16fda3c_0.jpg" alt=""><img loading="lazy" src="h/a16fda3c_1.jpg" alt=""><img loading="lazy" src="h/a16fda3c_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">18</span><span class="nm">나포레 호텔</span><span class="price">345,940<i>원</i></span></div>
+ <div class="addr">서울 종로구 수표로18가길 17</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,200원</span><span class='pp best'>호텔패스 345,940</span><span class='pp'>투어비스 358,351</span></div>
+ <div class='room'>🛏 Deluxe Twin Room 1 Double Bed and 1 Twin Bed</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.3 (13)</span></div>
+</div></div><div class="card" data-taxi="14" data-p="345940" data-n="호텔 더 디자이너스 청량리">
+<div class="strip"><img loading="lazy" src="h/695e166f_0.jpg" alt=""><img loading="lazy" src="h/695e166f_1.jpg" alt=""><img loading="lazy" src="h/695e166f_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">19</span><span class="nm">호텔 더 디자이너스 청량리</span><span class="price">345,940<i>원</i></span></div>
+ <div class="addr">서울 동대문구 왕산로 226</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 5.0km · 11,600원</span><span class='pp best'>호텔패스 345,940</span><span class='pp'>투어비스 362,260</span></div>
+ <div class='room'>🛏 디럭스 패밀리 트윈 · 무료취소 ~09/21</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 2성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★2.9 (51)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="345940" data-n="이비스 앰배서더 인사동">
+<div class="strip"><img loading="lazy" src="h/da0fb4cf_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">20</span><span class="nm">이비스 앰배서더 인사동</span><span class="price">345,940<i>원</i></span></div>
+ <div class="addr">서울 종로구 삼일대로30길 31</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 5.5km · 12,600원</span><span class='pp best'>호텔패스 345,940</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.6 (47)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="349373" data-n="호텔 리안">
+<div class="strip"><img loading="lazy" src="h/3d106d8c_0.jpg" alt=""><img loading="lazy" src="h/3d106d8c_1.jpg" alt=""><img loading="lazy" src="h/3d106d8c_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">21</span><span class="nm">호텔 리안</span><span class="price">349,373<i>원</i></span></div>
+ <div class="addr">서울 종로구 수표로18길 26</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.2km · 12,000원</span><span class='pp'>호텔패스 351,820</span><span class='pp best'>투어비스 349,373</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 (Family Twin Room) · 무료취소 ~10/30</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 1급호텔리안 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3 (3)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="353780" data-n="헤이븐스테이 종로">
+<div class="strip"><img loading="lazy" src="h/9cdb9f28_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">22</span><span class="nm">헤이븐스테이 종로</span><span class="price">353,780<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로5길 32-5 삼선빌딩 6층</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.2km · 12,800원</span><span class='pp best'>호텔패스 353,780</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd'>카카오 ★5 (1)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="354298" data-n="스테이즈437 종로">
+<div class="strip"><img loading="lazy" src="h/202ba303_0.jpg" alt=""><img loading="lazy" src="h/202ba303_1.jpg" alt=""><img loading="lazy" src="h/202ba303_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">23</span><span class="nm">스테이즈437 종로</span><span class="price">354,298<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로10길 20</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.8km · 12,400원</span><span class='pp best'>투어비스 354,298</span></div>
+ <div class='room'>🛏 디럭스 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>3성</span></div>
+</div></div><div class="card" data-taxi="10" data-p="357700" data-n="트레블로지 동대문 호텔">
+<div class="strip"><img loading="lazy" src="h/26ea3ad2_0.jpg" alt=""><img loading="lazy" src="h/26ea3ad2_1.jpg" alt=""><img loading="lazy" src="h/26ea3ad2_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">24</span><span class="nm">트레블로지 동대문 호텔</span><span class="price">357,700<i>원</i></span></div>
+ <div class="addr">서울 중구 동호로 359</div>
+ <div class="row"><span class="taxi t-g">🚕 10분 · 3.7km · 9,700원</span><span class='pp best'>호텔패스 357,700</span><span class='pp'>투어비스 365,381</span></div>
+ <div class='room'>🛏 프렌즈 &amp;amp; 패밀리 트리플 (Friends and Family Triple) · 무료취소 ~09/22 · 잔여 3실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.4 (21)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="369460" data-n="아늑 호텔 앤 스파 성수 건대점">
+<div class="strip"><img loading="lazy" src="h/459abc6e_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">25</span><span class="nm">아늑 호텔 앤 스파 성수 건대점</span><span class="price">369,460<i>원</i></span></div>
+ <div class="addr">서울 광진구 동일로 212</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 5.6km · 11,400원</span><span class='pp best'>호텔패스 369,460</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="18" data-p="370440" data-n="인사동 크라운 호텔">
+<div class="strip"><img loading="lazy" src="h/2ed95134_0.jpg" alt=""><img loading="lazy" src="h/2ed95134_1.jpg" alt=""><img loading="lazy" src="h/2ed95134_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">26</span><span class="nm">인사동 크라운 호텔</span><span class="price">370,440<i>원</i></span></div>
+ <div class="addr">서울 종로구 삼일대로30길 9</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 5.7km · 12,800원</span><span class='pp best'>호텔패스 370,440</span><span class='pp'>투어비스 378,957</span></div>
+ <div class='room'>🛏 Triple Room</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 2성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★2.1 (8)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="379260" data-n="트레블로지 명동 남산">
+<div class="strip"><img loading="lazy" src="h/58071f89_0.jpg" alt=""><img loading="lazy" src="h/58071f89_1.jpg" alt=""><img loading="lazy" src="h/58071f89_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">27</span><span class="nm">트레블로지 명동 남산</span><span class="price">379,260<i>원</i></span></div>
+ <div class="addr">서울 중구 수표로 16</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.2km · 12,300원</span><span class='pp best'>호텔패스 379,260</span><span class='pp'>투어비스 397,465</span></div>
+ <div class='room'>🛏 프렌즈 앤 패밀리 쿼드러플룸 · 무료취소 ~09/21 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4 (3)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="392228" data-n="라마다 바이 윈덤 서울 동대문">
+<div class="strip"><img loading="lazy" src="h/77d737df_0.jpg" alt=""><img loading="lazy" src="h/77d737df_1.jpg" alt=""><img loading="lazy" src="h/77d737df_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">28</span><span class="nm">라마다 바이 윈덤 서울 동대문</span><span class="price">392,228<i>원</i></span></div>
+ <div class="addr">서울 중구 동호로 354</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 3.7km · 9,700원</span><span class='pp'>호텔패스 423,360</span><span class='pp best'>투어비스 392,228</span></div>
+ <div class='room'>🛏 디럭스 트리플 · 무료취소 ~10/30 · 잔여 2실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.5 (42)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="392980" data-n="엠제이 호텔 종로">
+<div class="strip"><img loading="lazy" src="h/a5e466f6_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">29</span><span class="nm">엠제이 호텔 종로</span><span class="price">392,980<i>원</i></span></div>
+ <div class="addr">서울 종로구 삼일대로32가길 15</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 5.7km · 13,000원</span><span class='pp best'>호텔패스 392,980</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="19" data-p="394940" data-n="신라스테이 마포">
+<div class="strip"><img loading="lazy" src="h/45ce59c8_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">30</span><span class="nm">신라스테이 마포</span><span class="price">394,940<i>원</i></span></div>
+ <div class="addr">서울 마포구 마포대로 83</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 14.6km · 21,400원</span><span class='pp best'>호텔패스 394,940</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.3 (142)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="398860" data-n="서울가든호텔">
+<div class="strip"><img loading="lazy" src="h/db228db6_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">31</span><span class="nm">서울가든호텔</span><span class="price">398,860<i>원</i></span></div>
+ <div class="addr">서울 마포구 마포대로 58</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 14.3km · 21,100원</span><span class='pp best'>호텔패스 398,860</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.2 (90)</span></div>
+</div></div><div class="card" data-taxi="20" data-p="399840" data-n="신라스테이 서대문">
+<div class="strip"><img loading="lazy" src="h/83486394_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">32</span><span class="nm">신라스테이 서대문</span><span class="price">399,840<i>원</i></span></div>
+ <div class="addr">서울 서대문구 충정로 76</div>
+ <div class="row"><span class="taxi t-w">🚕 20분 · 7.5km · 14,200원</span><span class='pp best'>호텔패스 399,840</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.4 (127)</span></div>
+</div></div><div class="card" data-taxi="12" data-p="403760" data-n="호텔국도">
+<div class="strip"><img loading="lazy" src="h/c91781a9_0.jpg" alt=""><img loading="lazy" src="h/c91781a9_1.jpg" alt=""><img loading="lazy" src="h/c91781a9_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">33</span><span class="nm">호텔국도</span><span class="price">403,760<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로 164</div>
+ <div class="row"><span class="taxi t-g">🚕 12분 · 4.1km · 10,300원</span><span class='pp best'>호텔패스 403,760</span><span class='pp'>투어비스 419,367</span></div>
+ <div class='room'>🛏 Standard Family Twin Room</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.4 (27)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="404740" data-n="뉴블랑 센트럴 명동">
+<div class="strip"><img loading="lazy" src="h/05688a71_0.jpg" alt=""><img loading="lazy" src="h/05688a71_1.jpg" alt=""><img loading="lazy" src="h/05688a71_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">34</span><span class="nm">뉴블랑 센트럴 명동</span><span class="price">404,740<i>원</i></span></div>
+ <div class="addr">서울 중구 창경궁로 20</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 4.2km · 10,500원</span><span class='pp best'>호텔패스 404,740</span><span class='pp'>투어비스 426,562</span></div>
+ <div class='room'>🛏 디럭스 패밀리룸 · 무료취소 ~10/29 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★5 (5)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="405269" data-n="하이 스테이 명동">
+<div class="strip"><img loading="lazy" src="h/6a784b32_0.jpg" alt=""><img loading="lazy" src="h/6a784b32_1.jpg" alt=""><img loading="lazy" src="h/6a784b32_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">35</span><span class="nm">하이 스테이 명동</span><span class="price">405,269<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로 66-1</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.7km · 11,900원</span><span class='pp best'>투어비스 405,269</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 (Family Twin Room) · 무료취소 ~09/22 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>2성</span><span class='bd'>카카오 ★3 (1)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="408660" data-n="사보이 호텔">
+<div class="strip"><img loading="lazy" src="h/10511545_0.jpg" alt=""><img loading="lazy" src="h/10511545_1.jpg" alt=""><img loading="lazy" src="h/10511545_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">36</span><span class="nm">사보이 호텔</span><span class="price">408,660<i>원</i></span></div>
+ <div class="addr">서울 중구 명동8나길 10</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.2km · 13,500원</span><span class='pp best'>호텔패스 408,660</span><span class='pp'>투어비스 485,965</span></div>
+ <div class='room'>🛏 슈페리어 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.5 (6)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="409960" data-n="라인호텔명동">
+<div class="strip"><img loading="lazy" src="h/6ef49c0d_0.jpg" alt=""><img loading="lazy" src="h/6ef49c0d_1.jpg" alt=""><img loading="lazy" src="h/6ef49c0d_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">37</span><span class="nm">라인호텔명동</span><span class="price">409,960<i>원</i></span></div>
+ <div class="addr">서울 중구 명동3길 36</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.6km · 12,000원</span><span class='pp'>호텔패스 425,320</span><span class='pp best'>투어비스 409,960</span></div>
+ <div class='room'>🛏 이코노미 패밀리룸 · 무료취소 ~10/27</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>2성</span><span class='bd'>카카오 ★3.8 (6)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="411434" data-n="먼슬리브 을지로 호텔 스테이">
+<div class="strip"><img loading="lazy" src="h/c87ac114_0.jpg" alt=""><img loading="lazy" src="h/c87ac114_1.jpg" alt=""><img loading="lazy" src="h/c87ac114_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">38</span><span class="nm">먼슬리브 을지로 호텔 스테이</span><span class="price">411,434<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로 177</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,100원</span><span class='pp best'>투어비스 411,434</span></div>
+ <div class='room'>🛏 디럭스 트리플룸 (Deluxe Triple Room) · 무료취소 ~09/22 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd'>카카오 ★5 (1)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="413320" data-n="서머셋 팰리스 서울">
+<div class="strip"><img loading="lazy" src="h/02676a4a_0.jpg" alt=""><img loading="lazy" src="h/02676a4a_1.jpg" alt=""><img loading="lazy" src="h/02676a4a_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">39</span><span class="nm">서머셋 팰리스 서울</span><span class="price">413,320<i>원</i></span></div>
+ <div class="addr">서울 종로구 율곡로2길 7</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 6.6km · 14,100원</span><span class='pp'>호텔패스 439,180</span><span class='pp best'>투어비스 413,320</span></div>
+ <div class='room'>🛏 1BedRoom Deluxe Twin (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 레지던스호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.2 (105)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="424340" data-n="롯데시티호텔 마포">
+<div class="strip"><img loading="lazy" src="h/3fe16a97_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">40</span><span class="nm">롯데시티호텔 마포</span><span class="price">424,340<i>원</i></span></div>
+ <div class="addr">서울 마포구 마포대로 109</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 14.7km · 21,200원</span><span class='pp best'>호텔패스 424,340</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4 (63)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="425320" data-n="세종 호텔">
+<div class="strip"><img loading="lazy" src="h/57b641cd_0.jpg" alt=""><img loading="lazy" src="h/57b641cd_1.jpg" alt=""><img loading="lazy" src="h/57b641cd_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">41</span><span class="nm">세종 호텔</span><span class="price">425,320<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로 145</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.3km · 12,000원</span><span class='pp best'>호텔패스 425,320</span><span class='pp'>투어비스 498,189</span></div>
+ <div class='room'>🛏 디럭스 트윈베드 · 무료취소 ~09/21 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★1.8 (120)</span></div>
+</div></div><div class="card" data-taxi="12" data-p="426233" data-n="먼슬리브 광장시장 호텔 스테이">
+<div class="strip"><img loading="lazy" src="h/a64c0d7a_0.jpg" alt=""><img loading="lazy" src="h/a64c0d7a_1.jpg" alt=""><img loading="lazy" src="h/a64c0d7a_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">42</span><span class="nm">먼슬리브 광장시장 호텔 스테이</span><span class="price">426,233<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로27길 40</div>
+ <div class="row"><span class="taxi t-g">🚕 12분 · 4.2km · 10,400원</span><span class='pp'>호텔패스 472,360</span><span class='pp best'>투어비스 426,233</span></div>
+ <div class='room'>🛏 주니어 스위트 (Junior Suite) · 무료취소 ~09/22 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd'>카카오 ★5 (1)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="430220" data-n="오라카이 인사동 스위트">
+<div class="strip"><img loading="lazy" src="h/cbdc2497_0.jpg" alt=""><img loading="lazy" src="h/cbdc2497_1.jpg" alt=""><img loading="lazy" src="h/cbdc2497_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">43</span><span class="nm">오라카이 인사동 스위트</span><span class="price">430,220<i>원</i></span></div>
+ <div class="addr">서울 종로구 인사동4길 18</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 5.8km · 12,600원</span><span class='pp best'>호텔패스 430,220</span><span class='pp'>투어비스 504,637</span></div>
+ <div class='room'>🛏 투베드룸 디럭스 (3~13층 / 수영장 무료 입장) (최대 4인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.6 (34)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="430220" data-n="신라스테이 광화문">
+<div class="strip"><img loading="lazy" src="h/103693b8_0.jpg" alt=""><img loading="lazy" src="h/103693b8_1.jpg" alt=""><img loading="lazy" src="h/103693b8_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">44</span><span class="nm">신라스테이 광화문</span><span class="price">430,220<i>원</i></span></div>
+ <div class="addr">서울 종로구 삼봉로 71</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.4km · 13,300원</span><span class='pp best'>호텔패스 430,220</span><span class='pp'>투어비스 444,088</span></div>
+ <div class='room'>🛏 Standard Family Twin Room 1 Double Bed and 1 Twin Bed</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.4 (186)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="431180" data-n="서울 호텔 신신">
+<div class="strip"><img loading="lazy" src="h/8e0cda6d_0.jpg" alt=""><img loading="lazy" src="h/8e0cda6d_1.jpg" alt=""><img loading="lazy" src="h/8e0cda6d_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">45</span><span class="nm">서울 호텔 신신</span><span class="price">431,180<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로5길 21</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.1km · 13,100원</span><span class='pp best'>투어비스 431,180</span></div>
+ <div class='room'>🛏 디럭스 트윈베드 · 무료취소 ~10/27</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★5 (1)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="432180" data-n="호텔토마스 명동">
+<div class="strip"><img loading="lazy" src="h/a9e4402b_0.jpg" alt=""><img loading="lazy" src="h/a9e4402b_1.jpg" alt=""><img loading="lazy" src="h/a9e4402b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">46</span><span class="nm">호텔토마스 명동</span><span class="price">432,180<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로16길 26</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.1km · 13,100원</span><span class='pp best'>호텔패스 432,180</span><span class='pp'>투어비스 446,930</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 · 무료취소 ~10/27</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4 (18)</span></div>
+</div></div><div class="card" data-taxi="10" data-p="433160" data-n="호텔 스카이파크 동대문 1호점">
+<div class="strip"><img loading="lazy" src="h/c73b100f_0.jpg" alt=""><img loading="lazy" src="h/c73b100f_1.jpg" alt=""><img loading="lazy" src="h/c73b100f_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">47</span><span class="nm">호텔 스카이파크 동대문 1호점</span><span class="price">433,160<i>원</i></span></div>
+ <div class="addr">서울 중구 동호로 335</div>
+ <div class="row"><span class="taxi t-g">🚕 10분 · 3.7km · 9,900원</span><span class='pp best'>호텔패스 433,160</span><span class='pp'>투어비스 449,267</span></div>
+ <div class='room'>🛏 트리플, [회원전용] 룸온리</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 2성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.1 (24)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="435120" data-n="G2 호텔 명동">
+<div class="strip"><img loading="lazy" src="h/4206fb3b_0.jpg" alt=""><img loading="lazy" src="h/4206fb3b_1.jpg" alt=""><img loading="lazy" src="h/4206fb3b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">48</span><span class="nm">G2 호텔 명동</span><span class="price">435,120<i>원</i></span></div>
+ <div class="addr">서울 중구 수표로 24</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,400원</span><span class='pp best'>호텔패스 435,120</span><span class='pp'>투어비스 453,957</span></div>
+ <div class='room'>🛏 트리플룸 (주차 불가) · 무료취소 ~10/20</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.6 (10)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="436100" data-n="호텔 더 보타닉 세운 명동">
+<div class="strip"><img loading="lazy" src="h/f4687b09_0.jpg" alt=""><img loading="lazy" src="h/f4687b09_1.jpg" alt=""><img loading="lazy" src="h/f4687b09_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">49</span><span class="nm">호텔 더 보타닉 세운 명동</span><span class="price">436,100<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로19길 23-1</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.3km · 12,300원</span><span class='pp best'>호텔패스 436,100</span><span class='pp'>투어비스 513,346</span></div>
+ <div class='room'>🛏 프리미어 패밀리 트윈 · 무료취소 ~09/21</div>
+ <div class="bds"><span class='bd ok'>여기어때: 레지던스호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="15" data-p="437258" data-n="브레드 힐 호텔">
+<div class="strip"><img loading="lazy" src="h/a079935e_0.jpg" alt=""><img loading="lazy" src="h/a079935e_1.jpg" alt=""><img loading="lazy" src="h/a079935e_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">50</span><span class="nm">브레드 힐 호텔</span><span class="price">437,258<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로18길 7</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.2km · 12,000원</span><span class='pp'>호텔패스 484,120</span><span class='pp best'>투어비스 437,258</span></div>
+ <div class='room'>🛏 패밀리 트리플룸 (Family Triple Room) · 무료취소 ~09/22 · 잔여 2실</div>
+ <div class="bds"><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>2성</span><span class='bd'>카카오 ★5 (1)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="446880" data-n="ENA 스위트 호텔 남대문">
+<div class="strip"><img loading="lazy" src="h/d47cf23b_0.jpg" alt=""><img loading="lazy" src="h/d47cf23b_1.jpg" alt=""><img loading="lazy" src="h/d47cf23b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">51</span><span class="nm">ENA 스위트 호텔 남대문</span><span class="price">446,880<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로11길 36</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 6.6km · 13,700원</span><span class='pp best'>호텔패스 446,880</span><span class='pp'>투어비스 464,207</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 (Family Twin Room) · 무료취소 ~10/30</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.9 (37)</span></div>
+</div></div><div class="card" data-taxi="9" data-p="447290" data-n="소테츠 호텔즈 더 스프라지르 서울 동대문">
+<div class="strip"><img loading="lazy" src="h/e7c59103_0.jpg" alt=""><img loading="lazy" src="h/e7c59103_1.jpg" alt=""><img loading="lazy" src="h/e7c59103_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">52</span><span class="nm">소테츠 호텔즈 더 스프라지르 서울 동대문</span><span class="price">447,290<i>원</i></span></div>
+ <div class="addr">서울 중구 장충단로 226</div>
+ <div class="row"><span class="taxi t-g">🚕 9분 · 3.2km · 9,200원</span><span class='pp'>호텔패스 455,700</span><span class='pp best'>투어비스 447,290</span></div>
+ <div class='room'>🛏 디럭스 패밀리 트윈(웰컴드링크★, 주차불가) (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.9 (19)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="450800" data-n="호텔 베뉴지">
+<div class="strip"><img loading="lazy" src="h/75b2e3ab_0.jpg" alt=""><img loading="lazy" src="h/75b2e3ab_1.jpg" alt=""><img loading="lazy" src="h/75b2e3ab_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">53</span><span class="nm">호텔 베뉴지</span><span class="price">450,800<i>원</i></span></div>
+ <div class="addr">서울 종로구 청계천로 117</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,200원</span><span class='pp best'>호텔패스 450,800</span><span class='pp'>투어비스 467,570</span></div>
+ <div class='room'>🛏 디럭스 트리플룸 - 주차 불가 · 무료취소 ~09/21 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★2.7 (35)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="451780" data-n="코리아나 호텔">
+<div class="strip"><img loading="lazy" src="h/17d82923_0.jpg" alt=""><img loading="lazy" src="h/17d82923_1.jpg" alt=""><img loading="lazy" src="h/17d82923_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">54</span><span class="nm">코리아나 호텔</span><span class="price">451,780<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로 135</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.5km · 13,500원</span><span class='pp best'>호텔패스 451,780</span><span class='pp'>투어비스 457,663</span></div>
+ <div class='room'>🛏 Deluxe Family Twin Room</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.2 (160)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="452200" data-n="아미드 호텔 서울">
+<div class="strip"><img loading="lazy" src="h/8ffe3f9a_0.jpg" alt=""><img loading="lazy" src="h/8ffe3f9a_1.jpg" alt=""><img loading="lazy" src="h/8ffe3f9a_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">55</span><span class="nm">아미드 호텔 서울</span><span class="price">452,200<i>원</i></span></div>
+ <div class="addr">서울 종로구 인사동5길 38</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.0km · 12,800원</span><span class='pp best'>투어비스 452,200</span></div>
+ <div class='room'>🛏 Standard Triple Room, Bathtub</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.2 (17)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="452760" data-n="뉴서울 호텔">
+<div class="strip"><img loading="lazy" src="h/9c534bf0_0.jpg" alt=""><img loading="lazy" src="h/9c534bf0_1.jpg" alt=""><img loading="lazy" src="h/9c534bf0_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">56</span><span class="nm">뉴서울 호텔</span><span class="price">452,760<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로22길 16</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.1km · 13,100원</span><span class='pp best'>호텔패스 452,760</span><span class='pp'>투어비스 470,168</span></div>
+ <div class='room'>🛏 Deluxe Triple</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★2.8 (27)</span></div>
+</div></div><div class="card" data-taxi="13" data-p="456680" data-n="스테이락 호텔">
+<div class="strip"><img loading="lazy" src="h/598545ae_0.jpg" alt=""><img loading="lazy" src="h/598545ae_1.jpg" alt=""><img loading="lazy" src="h/598545ae_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">57</span><span class="nm">스테이락 호텔</span><span class="price">456,680<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로 211-5</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 4.7km · 11,100원</span><span class='pp best'>호텔패스 456,680</span><span class='pp'>투어비스 482,983</span></div>
+ <div class='room'>🛏 디럭스 트리플 · 무료취소 ~10/29 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>2성</span><span class='bd'>카카오 ★3.3 (10)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="456680" data-n="목시 서울 명동">
+<div class="strip"><img loading="lazy" src="h/1668ffba_0.jpg" alt=""><img loading="lazy" src="h/1668ffba_1.jpg" alt=""><img loading="lazy" src="h/1668ffba_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">58</span><span class="nm">목시 서울 명동</span><span class="price">456,680<i>원</i></span></div>
+ <div class="addr">서울 중구 명동8나길 38</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 6.0km · 12,500원</span><span class='pp best'>호텔패스 456,680</span><span class='pp'>투어비스 512,156</span></div>
+ <div class='room'>🛏 룸, 퀸사이즈침대 2개, 시내 전망 (Room, 2 Queen Beds, City View) · 무료취소 ~11/03</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.4 (8)</span></div>
+</div></div><div class="card" data-taxi="12" data-p="460259" data-n="호텔 모닝스카이">
+<div class="strip"><img loading="lazy" src="h/4110d9a0_0.jpg" alt=""><img loading="lazy" src="h/4110d9a0_1.jpg" alt=""><img loading="lazy" src="h/4110d9a0_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">59</span><span class="nm">호텔 모닝스카이</span><span class="price">460,259<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로45길 32-37</div>
+ <div class="row"><span class="taxi t-g">🚕 12분 · 4.2km · 10,500원</span><span class='pp'>호텔패스 462,560</span><span class='pp best'>투어비스 460,259</span></div>
+ <div class='room'>🛏 디럭스 트윈베드 · 무료취소 ~10/27</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★5 (2)</span></div>
+</div></div><div class="card" data-taxi="20" data-p="460600" data-n="라마다 호텔 앤 스위트 서울 남대문">
+<div class="strip"><img loading="lazy" src="h/f60dcb63_0.jpg" alt=""><img loading="lazy" src="h/f60dcb63_1.jpg" alt=""><img loading="lazy" src="h/f60dcb63_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">60</span><span class="nm">라마다 호텔 앤 스위트 서울 남대문</span><span class="price">460,600<i>원</i></span></div>
+ <div class="addr">서울 중구 칠패로 27</div>
+ <div class="row"><span class="taxi t-w">🚕 20분 · 7.0km · 14,100원</span><span class='pp best'>호텔패스 460,600</span><span class='pp'>투어비스 484,770</span></div>
+ <div class='room'>🛏 디럭스 트리플룸 · 무료취소 ~10/29 · 잔여 3실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span></div>
+</div></div><div class="card" data-taxi="18" data-p="460818" data-n="호텔 썬비 인사동">
+<div class="strip"><img loading="lazy" src="h/8215c25a_0.jpg" alt=""><img loading="lazy" src="h/8215c25a_1.jpg" alt=""><img loading="lazy" src="h/8215c25a_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">61</span><span class="nm">호텔 썬비 인사동</span><span class="price">460,818<i>원</i></span></div>
+ <div class="addr">서울 종로구 인사동7길 26</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 5.9km · 12,800원</span><span class='pp'>호텔패스 542,920</span><span class='pp best'>투어비스 460,818</span></div>
+ <div class='room'>🛏 디럭스 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.1 (13)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="463540" data-n="목시 서울 인사동">
+<div class="strip"><img loading="lazy" src="h/dfc42233_0.jpg" alt=""><img loading="lazy" src="h/dfc42233_1.jpg" alt=""><img loading="lazy" src="h/dfc42233_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">62</span><span class="nm">목시 서울 인사동</span><span class="price">463,540<i>원</i></span></div>
+ <div class="addr">서울 종로구 돈화문로11길 37</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 5.4km · 12,900원</span><span class='pp best'>호텔패스 463,540</span><span class='pp'>투어비스 465,251</span></div>
+ <div class='room'>🛏 룸, 킹사이즈침대 1개, 시내 전망 (Room, 1 King Bed, City View) · 무료취소 ~11/03 <b class='warn'>· 객실명상 3인실 불명확 — 예약 시 인원 확인</b></div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.6 (31)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="469420" data-n="글로카로카">
+<div class="strip"><img loading="lazy" src="h/e4bbe9ec_0.jpg" alt=""><img loading="lazy" src="h/e4bbe9ec_1.jpg" alt=""><img loading="lazy" src="h/e4bbe9ec_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">63</span><span class="nm">글로카로카</span><span class="price">469,420<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로 135 (태평로1가 61-1) 코리아나호텔 20층</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 6.5km · 13,900원</span><span class='pp best'>호텔패스 469,420</span><span class='pp'>투어비스 476,973</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 (Family Twin Room) · 무료취소 ~09/22 · 잔여 3실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 가족호텔호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.6 (7)</span></div>
+</div></div><div class="card" data-taxi="12" data-p="469548" data-n="호텔 피제이 명동">
+<div class="strip"><img loading="lazy" src="h/2347c886_0.jpg" alt=""><img loading="lazy" src="h/2347c886_1.jpg" alt=""><img loading="lazy" src="h/2347c886_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">64</span><span class="nm">호텔 피제이 명동</span><span class="price">469,548<i>원</i></span></div>
+ <div class="addr">서울 중구 마른내로 71</div>
+ <div class="row"><span class="taxi t-g">🚕 12분 · 4.4km · 10,800원</span><span class='pp best'>투어비스 469,548</span></div>
+ <div class='room'>🛏 시그니처 패밀리 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.7 (77)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="476280" data-n="나인트리 바이 파르나스 서울 명동 1">
+<div class="strip"><img loading="lazy" src="h/140b9dab_0.jpg" alt=""><img loading="lazy" src="h/140b9dab_1.jpg" alt=""><img loading="lazy" src="h/140b9dab_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">65</span><span class="nm">나인트리 바이 파르나스 서울 명동 1</span><span class="price">476,280<i>원</i></span></div>
+ <div class="addr">서울 중구 명동10길 51</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.3km · 13,400원</span><span class='pp best'>호텔패스 476,280</span><span class='pp'>투어비스 503,723</span></div>
+ <div class='room'>🛏 패밀리트윈 · 무료취소 ~09/21</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4 (13)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="477260" data-n="소테츠호텔즈 더 스프라지르 서울 명동">
+<div class="strip"><img loading="lazy" src="h/c73d4017_0.jpg" alt=""><img loading="lazy" src="h/c73d4017_1.jpg" alt=""><img loading="lazy" src="h/c73d4017_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">66</span><span class="nm">소테츠호텔즈 더 스프라지르 서울 명동</span><span class="price">477,260<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로5길 15</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.2km · 13,200원</span><span class='pp best'>호텔패스 477,260</span><span class='pp'>투어비스 530,717</span></div>
+ <div class='room'>🛏 TRIPLE COMFORT</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.5 (36)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="479220" data-n="트래블로지 명동 을지로">
+<div class="strip"><img loading="lazy" src="h/314eaee4_0.jpg" alt=""><img loading="lazy" src="h/314eaee4_1.jpg" alt=""><img loading="lazy" src="h/314eaee4_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">67</span><span class="nm">트래블로지 명동 을지로</span><span class="price">479,220<i>원</i></span></div>
+ <div class="addr">서울 중구 수표로 61</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.5km · 12,400원</span><span class='pp best'>호텔패스 479,220</span><span class='pp'>투어비스 508,568</span></div>
+ <div class='room'>🛏 프렌즈 앤 패밀리 트리플룸 · 무료취소 ~09/21</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★2.1 (16)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="481180" data-n="웨스턴 코업 호텔&amp;레지던스 동대문">
+<div class="strip"><img loading="lazy" src="h/2e52f8bc_0.jpg" alt=""><img loading="lazy" src="h/2e52f8bc_1.jpg" alt=""><img loading="lazy" src="h/2e52f8bc_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">68</span><span class="nm">웨스턴 코업 호텔&amp;레지던스 동대문</span><span class="price">481,180<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로 228</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 3.6km · 10,000원</span><span class='pp best'>호텔패스 481,180</span><span class='pp'>투어비스 494,399</span></div>
+ <div class='room'>🛏 Family Suite</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.1 (9)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="482161" data-n="프레지던트호텔">
+<div class="strip"><img loading="lazy" src="h/746be059_0.jpg" alt=""><img loading="lazy" src="h/746be059_1.jpg" alt=""><img loading="lazy" src="h/746be059_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">69</span><span class="nm">프레지던트호텔</span><span class="price">482,161<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로 16</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.3km · 13,400원</span><span class='pp best'>투어비스 482,161</span></div>
+ <div class='room'>🛏 FAMILY ROOM STANDARD</div>
+ <div class="bds"><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span></div>
+</div></div><div class="card" data-taxi="14" data-p="486147" data-n="퍼시픽 호텔">
+<div class="strip"><img loading="lazy" src="h/dc1db5ba_0.jpg" alt=""><img loading="lazy" src="h/dc1db5ba_1.jpg" alt=""><img loading="lazy" src="h/dc1db5ba_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">70</span><span class="nm">퍼시픽 호텔</span><span class="price">486,147<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로20길 2</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 5.2km · 11,700원</span><span class='pp'>호텔패스 550,760</span><span class='pp best'>투어비스 486,147</span></div>
+ <div class='room'>🛏 디럭스 트윈룸 (1 Double Bed + 1 Single Bed) (Deluxe Twin Room (1 Double Bed + 1 Single Bed)) · 무료취소 ~09/22</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.4 (19)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="486392" data-n="호텔 스카이파크 명동2호점">
+<div class="strip"><img loading="lazy" src="h/86de3f77_0.jpg" alt=""><img loading="lazy" src="h/86de3f77_1.jpg" alt=""><img loading="lazy" src="h/86de3f77_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">71</span><span class="nm">호텔 스카이파크 명동2호점</span><span class="price">486,392<i>원</i></span></div>
+ <div class="addr">서울 중구 명동9길 22</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.5km · 12,300원</span><span class='pp'>호텔패스 500,780</span><span class='pp best'>투어비스 486,392</span></div>
+ <div class='room'>🛏 트리플, [회원전용] 룸온리</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 2성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.6 (12)</span></div>
+</div></div><div class="card" data-taxi="19" data-p="487060" data-n="더 프리마 호텔 종로">
+<div class="strip"><img loading="lazy" src="h/c4e3e57a_0.jpg" alt=""><img loading="lazy" src="h/c4e3e57a_1.jpg" alt=""><img loading="lazy" src="h/c4e3e57a_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">72</span><span class="nm">더 프리마 호텔 종로</span><span class="price">487,060<i>원</i></span></div>
+ <div class="addr">서울 종로구 우정국로 46</div>
+ <div class="row"><span class="taxi t-w">🚕 19분 · 6.7km · 14,100원</span><span class='pp best'>호텔패스 487,060</span><span class='pp'>투어비스 498,257</span></div>
+ <div class='room'>🛏 [얼리버드 예약 특가] 디럭스 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.7 (13)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="488040" data-n="롯데시티호텔 명동">
+<div class="strip"><img loading="lazy" src="h/807e4c97_0.jpg" alt=""><img loading="lazy" src="h/807e4c97_1.jpg" alt=""><img loading="lazy" src="h/807e4c97_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">73</span><span class="nm">롯데시티호텔 명동</span><span class="price">488,040<i>원</i></span></div>
+ <div class="addr">서울 중구 삼일대로 362</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.3km · 12,100원</span><span class='pp best'>호텔패스 488,040</span><span class='pp'>투어비스 493,150</span></div>
+ <div class='room'>🛏 FAMILY ROOM Superior Family Twin</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.1 (71)</span></div>
+</div></div><div class="card" data-taxi="14" data-p="488175" data-n="홈즈스테이 명동">
+<div class="strip"><img loading="lazy" src="h/d131cdab_0.jpg" alt=""><img loading="lazy" src="h/d131cdab_1.jpg" alt=""><img loading="lazy" src="h/d131cdab_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">74</span><span class="nm">홈즈스테이 명동</span><span class="price">488,175<i>원</i></span></div>
+ <div class="addr">서울 중구 충무로 3</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 5.0km · 11,700원</span><span class='pp best'>투어비스 488,175</span></div>
+ <div class='room'>🛏 스탠다드 패밀리 트윈룸 · 무료취소 ~09/21 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd'>카카오 ★3.8 (14)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="488513" data-n="하이스테이 종로">
+<div class="strip"><img loading="lazy" src="h/f76ba71c_0.jpg" alt=""><img loading="lazy" src="h/f76ba71c_1.jpg" alt=""><img loading="lazy" src="h/f76ba71c_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">75</span><span class="nm">하이스테이 종로</span><span class="price">488,513<i>원</i></span></div>
+ <div class="addr">서울 종로구 삼일대로17길 17</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.5km · 12,400원</span><span class='pp best'>투어비스 488,513</span></div>
+ <div class='room'>🛏 디럭스 트윈룸 (최대 3인)</div>
+ <div class="bds"><span class='bd info'>2성</span></div>
+</div></div><div class="card" data-taxi="18" data-p="489020" data-n="나인트리 바이 파르나스 서울 인사동">
+<div class="strip"><img loading="lazy" src="h/837cfc5b_0.jpg" alt=""><img loading="lazy" src="h/837cfc5b_1.jpg" alt=""><img loading="lazy" src="h/837cfc5b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">76</span><span class="nm">나인트리 바이 파르나스 서울 인사동</span><span class="price">489,020<i>원</i></span></div>
+ <div class="addr">서울 종로구 인사동길 49</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.0km · 12,800원</span><span class='pp best'>호텔패스 489,020</span><span class='pp'>투어비스 535,565</span></div>
+ <div class='room'>🛏 패밀리 트윈, (타이드스퀘어) 룸온니(조식 불포함 상품)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★3.8 (107)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="489216" data-n="모헤닉호텔 서울 명동">
+<div class="strip"><img loading="lazy" src="h/c6f8f81c_0.jpg" alt=""><img loading="lazy" src="h/c6f8f81c_1.jpg" alt=""><img loading="lazy" src="h/c6f8f81c_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">77</span><span class="nm">모헤닉호텔 서울 명동</span><span class="price">489,216<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로 115</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 6.1km · 13,000원</span><span class='pp'>호텔패스 492,940</span><span class='pp best'>투어비스 489,216</span></div>
+ <div class='room'>🛏 디럭스 트윈(마감임박★) (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.8 (5)</span></div>
+</div></div><div class="card" data-taxi="11" data-p="492940" data-n="호텔 스카이파크 킹스타운 동대문">
+<div class="strip"><img loading="lazy" src="h/f7a5f253_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">78</span><span class="nm">호텔 스카이파크 킹스타운 동대문</span><span class="price">492,940<i>원</i></span></div>
+ <div class="addr">서울 중구 장충단로13길 20</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 3.8km · 10,000원</span><span class='pp best'>호텔패스 492,940</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★3.1 (56)</span></div>
+</div></div><div class="card" data-taxi="13" data-p="496860" data-n="글루호텔">
+<div class="strip"><img loading="lazy" src="h/3b55afd7_0.jpg" alt=""><img loading="lazy" src="h/3b55afd7_1.jpg" alt=""><img loading="lazy" src="h/3b55afd7_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">79</span><span class="nm">글루호텔</span><span class="price">496,860<i>원</i></span></div>
+ <div class="addr">서울 종로구 율곡로 228</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 4.5km · 11,100원</span><span class='pp best'>호텔패스 496,860</span><span class='pp'>투어비스 532,523</span></div>
+ <div class='room'>🛏 스위트 · 무료취소 ~10/20 · 잔여 1실</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.7 (144)</span></div>
+</div></div><div class="card" data-taxi="14" data-p="496860" data-n="G3 호텔 충무로">
+<div class="strip"><img loading="lazy" src="h/83cdc2b5_0.jpg" alt=""><img loading="lazy" src="h/83cdc2b5_1.jpg" alt=""><img loading="lazy" src="h/83cdc2b5_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">80</span><span class="nm">G3 호텔 충무로</span><span class="price">496,860<i>원</i></span></div>
+ <div class="addr">서울 중구 충무로 7</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 5.0km · 11,600원</span><span class='pp best'>호텔패스 496,860</span><span class='pp'>투어비스 508,383</span></div>
+ <div class='room'>🛏 패밀리 트윈룸 - 도보, 버스, 지하철 이용만 가능, 주차 불가 · 무료취소 ~10/20</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.2 (5)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="499800" data-n="로이넷호텔 서울 마포">
+<div class="strip"><img loading="lazy" src="h/37c3c9b0_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">81</span><span class="nm">로이넷호텔 서울 마포</span><span class="price">499,800<i>원</i></span></div>
+ <div class="addr">서울 마포구 마포대로 67</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 14.1km · 20,600원</span><span class='pp best'>호텔패스 499,800</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.4 (43)</span></div>
+</div></div><div class="card" data-taxi="10" data-p="503720" data-n="나인트리 바이 파르나스 서울 동대문">
+<div class="strip"><img loading="lazy" src="h/a555a66e_0.jpg" alt=""><img loading="lazy" src="h/a555a66e_1.jpg" alt=""><img loading="lazy" src="h/a555a66e_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">82</span><span class="nm">나인트리 바이 파르나스 서울 동대문</span><span class="price">503,720<i>원</i></span></div>
+ <div class="addr">서울 중구 을지로 224</div>
+ <div class="row"><span class="taxi t-g">🚕 10분 · 3.6km · 9,600원</span><span class='pp best'>호텔패스 503,720</span><span class='pp'>투어비스 535,565</span></div>
+ <div class='room'>🛏 패밀리, 룸온니(조식 불포함 상품)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.2 (70)</span></div>
+</div></div><div class="card" data-taxi="16" data-p="503996" data-n="르몽호텔">
+<div class="strip"><img loading="lazy" src="h/508e192f_0.jpg" alt=""><img loading="lazy" src="h/508e192f_1.jpg" alt=""><img loading="lazy" src="h/508e192f_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">83</span><span class="nm">르몽호텔</span><span class="price">503,996<i>원</i></span></div>
+ <div class="addr">서울 종로구 종로16길 28</div>
+ <div class="row"><span class="taxi t-w">🚕 16분 · 5.4km · 12,500원</span><span class='pp best'>투어비스 503,996</span></div>
+ <div class='room'>🛏 family for 4(City view)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.6 (9)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="505680" data-n="호텔 스카이파크 명동 1호점">
+<div class="strip"><img loading="lazy" src="h/ec2a1419_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">84</span><span class="nm">호텔 스카이파크 명동 1호점</span><span class="price">505,680<i>원</i></span></div>
+ <div class="addr">서울 중구 명동8나길 15</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.1km · 13,300원</span><span class='pp best'>호텔패스 505,680</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="11" data-p="510281" data-n="에이큐브 호텔">
+<div class="strip"><img loading="lazy" src="h/ef9dd985_0.jpg" alt=""><img loading="lazy" src="h/ef9dd985_1.jpg" alt=""><img loading="lazy" src="h/ef9dd985_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">85</span><span class="nm">에이큐브 호텔</span><span class="price">510,281<i>원</i></span></div>
+ <div class="addr">서울 중구 동호로35길 5</div>
+ <div class="row"><span class="taxi t-g">🚕 11분 · 3.8km · 10,000원</span><span class='pp best'>투어비스 510,281</span></div>
+ <div class='room'>🛏 패밀리 스위트, 더블침대 2개 (Family Suite, 2 Double Beds) · 무료취소 ~10/28</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 관광호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.4 (16)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="518375" data-n="스탠포드호텔 명동">
+<div class="strip"><img loading="lazy" src="h/f12ad9b2_0.jpg" alt=""><img loading="lazy" src="h/f12ad9b2_1.jpg" alt=""><img loading="lazy" src="h/f12ad9b2_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">86</span><span class="nm">스탠포드호텔 명동</span><span class="price">518,375<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로 84</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.5km · 11,800원</span><span class='pp'>호텔패스 543,900</span><span class='pp best'>투어비스 518,375</span></div>
+ <div class='room'>🛏 Family Twin Room Edge</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.2 (17)</span></div>
+</div></div><div class="card" data-taxi="13" data-p="525328" data-n="호텔어라이브 을지로 틈">
+<div class="strip"><img loading="lazy" src="h/a29649ec_0.jpg" alt=""><img loading="lazy" src="h/a29649ec_1.jpg" alt=""><img loading="lazy" src="h/a29649ec_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">87</span><span class="nm">호텔어라이브 을지로 틈</span><span class="price">525,328<i>원</i></span></div>
+ <div class="addr">서울 중구 충무로5길 22</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 4.7km · 11,400원</span><span class='pp'>호텔패스 566,440</span><span class='pp best'>투어비스 525,328</span></div>
+ <div class='room'>🛏 디럭스 트윈룸 (Deluxe Twin Room) · 무료취소 ~09/22 <b class='warn'>· 객실명상 3인실 불명확 — 예약 시 인원 확인</b></div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★5 (5)</span></div>
+</div></div><div class="card" data-taxi="13" data-p="533252" data-n="구도 레지던스 충무로">
+<div class="strip"><img loading="lazy" src="h/9a01ad45_0.jpg" alt=""><img loading="lazy" src="h/9a01ad45_1.jpg" alt=""><img loading="lazy" src="h/9a01ad45_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">88</span><span class="nm">구도 레지던스 충무로</span><span class="price">533,252<i>원</i></span></div>
+ <div class="addr">서울 중구 마른내로12길 17-23</div>
+ <div class="row"><span class="taxi t-o">🚕 13분 · 4.4km · 11,000원</span><span class='pp best'>투어비스 533,252</span></div>
+ <div class='room'>🛏 2베드룸 1(living room+bathroom+kitchen+2bed room) (최대 4인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 레지던스호텔 · 대실 없음</span></div>
+</div></div><div class="card" data-taxi="14" data-p="535884" data-n="오라카이 대학로 호텔, BW 시그니처 컬렉션">
+<div class="strip"><img loading="lazy" src="h/523ab313_0.jpg" alt=""><img loading="lazy" src="h/523ab313_1.jpg" alt=""><img loading="lazy" src="h/523ab313_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">89</span><span class="nm">오라카이 대학로 호텔, BW 시그니처 컬렉션</span><span class="price">535,884<i>원</i></span></div>
+ <div class="addr">서울 종로구 율곡로 180</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 4.9km · 11,800원</span><span class='pp best'>투어비스 535,884</span></div>
+ <div class='room'>🛏 Deluxe Suite</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★4.1 (73)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="538020" data-n="호텔 스카이파크 명동3호점">
+<div class="strip"><img loading="lazy" src="h/bd8e8eff_0.jpg" alt=""><img loading="lazy" src="h/bd8e8eff_1.jpg" alt=""><img loading="lazy" src="h/bd8e8eff_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">90</span><span class="nm">호텔 스카이파크 명동3호점</span><span class="price">538,020<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로 139</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.3km · 13,400원</span><span class='pp best'>호텔패스 538,020</span><span class='pp'>투어비스 541,261</span></div>
+ <div class='room'>🛏 트리플, [회원전용] 룸온리</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 2성급호텔 · 대실 없음</span><span class='bd info'>3성</span><span class='bd'>카카오 ★3.6 (18)</span></div>
+</div></div><div class="card" data-taxi="14" data-p="559580" data-n="나인트리 바이 파르나스 서울 명동 2">
+<div class="strip"><img loading="lazy" src="h/3b6d1aea_0.jpg" alt=""><img loading="lazy" src="h/3b6d1aea_1.jpg" alt=""><img loading="lazy" src="h/3b6d1aea_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">91</span><span class="nm">나인트리 바이 파르나스 서울 명동 2</span><span class="price">559,580<i>원</i></span></div>
+ <div class="addr">서울 중구 마른내로 28</div>
+ <div class="row"><span class="taxi t-o">🚕 14분 · 4.9km · 11,500원</span><span class='pp best'>호텔패스 559,580</span><span class='pp'>투어비스 574,885</span></div>
+ <div class='room'>🛏 패밀리 트윈, 룸온니(조식 불포함 상품)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.2 (82)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="562055" data-n="풀만 앰배서더 서울 이스트폴">
+<div class="strip"><img loading="lazy" src="h/17f557d0_0.jpg" alt=""><img loading="lazy" src="h/17f557d0_1.jpg" alt=""><img loading="lazy" src="h/17f557d0_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">92</span><span class="nm">풀만 앰배서더 서울 이스트폴</span><span class="price">562,055<i>원</i></span></div>
+ <div class="addr">서울 광진구 아차산로 410</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 6.5km · 12,900원</span><span class='pp'>호텔패스 592,900</span><span class='pp best'>투어비스 562,055</span></div>
+ <div class='room'>🛏 디럭스 킹 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 5성급호텔 · 대실 없음</span><span class='bd info'>5성</span><span class='bd'>카카오 ★4.1 (21)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="565460" data-n="이비스 앰배서더 명동">
+<div class="strip"><img loading="lazy" src="h/69d56118_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">93</span><span class="nm">이비스 앰배서더 명동</span><span class="price">565,460<i>원</i></span></div>
+ <div class="addr">서울 중구 남대문로 78</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.6km · 11,800원</span><span class='pp best'>호텔패스 565,460</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★3.8 (23)</span></div>
+</div></div><div class="card" data-taxi="17" data-p="568400" data-n="클라벤 호텔 명동 시티홀">
+<div class="strip"><img loading="lazy" src="h/8f76e72b_0.jpg" alt=""><img loading="lazy" src="h/8f76e72b_1.jpg" alt=""><img loading="lazy" src="h/8f76e72b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">94</span><span class="nm">클라벤 호텔 명동 시티홀</span><span class="price">568,400<i>원</i></span></div>
+ <div class="addr">서울 중구 세종대로16길 22</div>
+ <div class="row"><span class="taxi t-w">🚕 17분 · 6.1km · 13,100원</span><span class='pp best'>호텔패스 568,400</span><span class='pp'>투어비스 582,561</span></div>
+ <div class='room'>🛏 프렌즈 &amp;amp; 패밀리 트리플 (Friends &amp;amp; Family Triple) · 무료취소 ~10/30</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 3성급호텔 · 대실 없음</span><span class='bd info'>3성</span></div>
+</div></div><div class="card" data-taxi="15" data-p="574708" data-n="SL호텔 명동">
+<div class="strip"><img loading="lazy" src="h/3c5b261f_0.jpg" alt=""><img loading="lazy" src="h/3c5b261f_1.jpg" alt=""><img loading="lazy" src="h/3c5b261f_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">95</span><span class="nm">SL호텔 명동</span><span class="price">574,708<i>원</i></span></div>
+ <div class="addr">서울 중구 삼일대로4길 9</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.4km · 11,900원</span><span class='pp best'>투어비스 574,708</span></div>
+ <div class='room'>🛏 수페리어 트윈 (최대 3인)</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd'>카카오 ★3.7 (3)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="576717" data-n="어반스테이 부티크 익선">
+<div class="strip"><img loading="lazy" src="h/5672a09b_0.jpg" alt=""><img loading="lazy" src="h/5672a09b_1.jpg" alt=""><img loading="lazy" src="h/5672a09b_2.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">96</span><span class="nm">어반스테이 부티크 익선</span><span class="price">576,717<i>원</i></span></div>
+ <div class="addr">서울 종로구 돈화문로11나길 53</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.1km · 13,400원</span><span class='pp'>호텔패스 590,940</span><span class='pp best'>투어비스 576,717</span></div>
+ <div class='room'>🛏 패밀리 투룸 (Family Two Rooms) · 무료취소 ~09/22 · 잔여 3실</div>
+ <div class="bds"><span class='bd ok'>여기어때: 레지던스호텔 · 대실 없음</span><span class='bd'>카카오 ★4 (6)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="589960" data-n="보코 서울 명동">
+<div class="strip"><img loading="lazy" src="h/99dc33a7_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">97</span><span class="nm">보코 서울 명동</span><span class="price">589,960<i>원</i></span></div>
+ <div class="addr">서울 중구 퇴계로 52</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.9km · 12,300원</span><span class='pp best'>호텔패스 589,960</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 4성급호텔 · 대실 없음</span><span class='bd info'>4성</span><span class='bd'>카카오 ★4.1 (15)</span></div>
+</div></div><div class="card" data-taxi="15" data-p="591920" data-n="소테츠 프레사 인 서울 명동">
+<div class="strip"><img loading="lazy" src="h/26fbed43_0.jpg" alt=""></div>
+<div class="body">
+ <div class="top"><span class="rk">98</span><span class="nm">소테츠 프레사 인 서울 명동</span><span class="price">591,920<i>원</i></span></div>
+ <div class="addr">서울 중구 명동길 48</div>
+ <div class="row"><span class="taxi t-o">🚕 15분 · 5.4km · 12,000원</span><span class='pp best'>호텔패스 591,920</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd ok'>여기어때: 비즈니스호텔 · 대실 없음</span><span class='bd'>카카오 ★4.7 (7)</span></div>
+</div></div><div class="card" data-taxi="18" data-p="598780" data-n="더 그랜드 호텔 명동">
+<div class="strip"><div class="noimg">사진 없음</div></div>
+<div class="body">
+ <div class="top"><span class="rk">99</span><span class="nm">더 그랜드 호텔 명동</span><span class="price">598,780<i>원</i></span></div>
+ <div class="addr">서울 중구 명동8가길 38</div>
+ <div class="row"><span class="taxi t-w">🚕 18분 · 6.4km · 13,500원</span><span class='pp best'>호텔패스 598,780</span></div>
+ <div class='room'>🛏 호텔패스 3인 검색 결과(3인 투숙 가능 객실 요금) · 객실 구성은 상세요금에서 확인</div>
+ <div class="bds"><span class='bd ok'>카카오: 호텔</span><span class='bd'>카카오 ★2 (2)</span></div>
+</div></div>
 </div>
 
-<div class="panel">
-  <h2>🚕 11/8(일) 06:30 택시 — 식장까지</h2>
-  <table>
-    <tr><th>출발 호텔</th><th class="n">거리</th><th class="n">카카오맵 실측</th><th class="n">택시비</th><th class="n">06:30 출발 시 도착</th></tr>
-    <tr><td>호텔 밀리오레 서울</td><td class="n">3.7km</td><td class="n"><b>11분</b></td><td class="n">약 9,800원</td><td class="n ok">06:41 전후</td></tr>
-    <tr><td>현대 레지던스 서울</td><td class="n">4.3km</td><td class="n"><b>13분</b></td><td class="n">약 10,900원</td><td class="n ok">06:43 전후</td></tr>
-    <tr><td>서울앤호텔 동대문</td><td class="n">3.2km</td><td class="n">10분</td><td class="n">약 9,400원</td><td class="n ok">06:40 전후</td></tr>
-    <tr><td>호텔 코지 / 루미아 명동</td><td class="n">5.8km</td><td class="n">16분</td><td class="n">약 12,600원</td><td class="n warn">06:46 전후</td></tr>
-    <tr><td>더 스테이 클래식 명동</td><td class="n">6.8km</td><td class="n">19분</td><td class="n">약 14,200원</td><td class="n bad">06:49 전후</td></tr>
-  </table>
-  <div class="note" style="margin-top:7px">
-    · 측정: <b>2026-09-29(화) 23시경 카카오맵 자동차 길찾기(실시간 교통)</b>. 카카오맵 웹은 미래 출발시각 지정이 안 되고, 네이버지도는 자동화 브라우저 접근이 막혀 있어 평일 밤 한산한 시간대로 쟀다. 일요일 06:30도 비슷하게 한산한 시간대라 이 값과 큰 차이는 없을 것으로 본다.<br>
-    · 서울 택시 심야할증은 22시~04시라 06:30에는 할증이 없다. 일요일 새벽은 택시 잡기가 쉬운 편이지만, 전날 밤 카카오T 예약이나 프런트 콜을 권한다.<br>
-    · 06:30에 출발하면 07:00까지 여유가 15분 이상 남는다. 명동권은 여유가 줄어 비추천.
-  </div>
-</div>
+<div class="panel" style="margin-top:14px"><h2>🚫 제외한 곳 (21)</h2>
+<table><tr><th>숙소</th><th class="n">3인가</th><th class="n">택시</th><th>이유</th></tr><tr><td>31페이지</td><td class='n'>166,728</td><td class='n'>13분</td><td>3인 이상 동일 성별만 투숙 가능 · 체크인 18시</td></tr><tr><td>남산 포레스트</td><td class='n'>189,526</td><td class='n'>15분</td><td>게스트하우스형 객실(&#x27;4인 패밀리 단독실 내부화장실&#x27;)</td></tr><tr><td>호텔 트리쉐이드 동대문</td><td class='n'>201,880</td><td class='n'>12분</td><td>카카오 분류 여관·모텔, 여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>잠실 톰지호텔</td><td class='n'>239,120</td><td class='n'>16분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>호텔 클로이</td><td class='n'>242,970</td><td class='n'>12분</td><td>카카오 분류 여관·모텔, 여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>아모렉스 호텔 왕십리</td><td class='n'>246,960</td><td class='n'>3분</td><td>여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>상주호텔 서울</td><td class='n'>272,440</td><td class='n'>12분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>MG 호텔 종각</td><td class='n'>294,000</td><td class='n'>16분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>명동 더 스테이 호텔</td><td class='n'>295,960</td><td class='n'>18분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>컬리넌 호텔 앤 스파</td><td class='n'>304,769</td><td class='n'>3분</td><td>여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>명동 스타힐스</td><td class='n'>335,479</td><td class='n'>20분</td><td>카카오 분류 여관·모텔, 여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>소노체 호스텔 서울</td><td class='n'>341,033</td><td class='n'>1분</td><td>게스트하우스·호스텔</td></tr><tr><td>호텔 모닥 남대문</td><td class='n'>358,688</td><td class='n'>20분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>모렌 서울 명동</td><td class='n'>400,287</td><td class='n'>15분</td><td>게스트하우스·호스텔</td></tr><tr><td>잠실 라움 관광호텔</td><td class='n'>424,340</td><td class='n'>17분</td><td>여기어때 대실 판매, 여기어때 분류 모텔</td></tr><tr><td>더 메이 호텔</td><td class='n'>474,900</td><td class='n'>18분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>우미관 호텔</td><td class='n'>513,219</td><td class='n'>16분</td><td>카카오 분류 여관·모텔</td></tr><tr><td>스몰하우스 빅도어 명동</td><td class='n'>513,520</td><td class='n'>14분</td><td>게스트하우스·호스텔</td></tr><tr><td>호텔 더 디자이너스 서울역</td><td class='n'>450,800</td><td class='n'>21분</td><td>택시 20분 초과</td></tr><tr><td>몽호텔 종로</td><td class='n'>468,440</td><td class='n'>?</td><td>위치 확인 불가 (호텔패스 목록에만 있음)</td></tr><tr><td>트래블롯지 호텔 명동 시티홀</td><td class='n'>568,400</td><td class='n'>?</td><td>위치 확인 불가 (호텔패스 목록에만 있음)</td></tr></table></div>
 
-<!-- 1순위 -->
-<div class="card">
-  <div class="strip">
-    <a href="img/mil_2.jpg" target="_blank"><img src="img/mil_2.jpg" alt="밀리오레 2베드 객실"></a>
-    <a href="img/mil_3.jpg" target="_blank"><img src="img/mil_3.jpg" alt="밀리오레 객실"></a>
-    <a href="img/mil_1.jpg" target="_blank"><img src="img/mil_1.jpg" alt="밀리오레 외관"></a>
-    <a href="img/mil_4.jpg" target="_blank"><img src="img/mil_4.jpg" alt="밀리오레 로비"></a>
-    <a href="img/mil_5.jpg" target="_blank"><img src="img/mil_5.jpg" alt="객실에서 본 DDP"></a>
-    <a href="img/mil_6.jpg" target="_blank"><img src="img/mil_6.jpg" alt="밀리오레 욕실"></a>
-  </div>
-  <div class="chead">
-    <div class="top"><span class="rank">1순위</span><span class="name">호텔 밀리오레 서울</span><span class="price">209,720<i>원 · 호텔패스</i></span></div>
-    <div class="addr">서울 중구 장충단로 263 (동대문 밀리오레 쇼핑몰 건물 · 14층 로비, 19~20층 객실) · 동대문역사문화공원역 14번 출구 · DDP 200m · 64실</div>
-    <div class="badges">
-      <span class="badge b-ok">카카오 분류: 호텔</span><span class="badge b-ok">대실 없음</span><span class="badge b-ok">24시간 프런트</span>
-      <span class="badge b-info">슈페리어 트리플 = 대형 더블 1 + 싱글 1</span><span class="badge b-info">즉시확정</span><span class="badge b-warn">객실 작은 편</span>
-    </div>
-  </div>
-  <div class="taxi">🚕 11/8 06:30 출발 → <b>11분</b> · 3.7km · 약 9,800원 (장충단로 → 퇴계로 → 왕십리로)</div>
-  <div class="oneliner">직접 묵어 본 곳. 작지만 정식 호텔 구성(레스토랑·비즈니스센터·조식 운영)이고, 후보 중 가장 싸면서 식장과도 가깝다.</div>
-  <details open><summary>💰 제휴몰별 가격 · 객실</summary><div class="dbody">
-    <table>
-      <tr><th>몰</th><th>객실</th><th class="n">요금</th><th>취소</th></tr>
-      <tr><td><b>호텔패스</b></td><td>SUPERIOR TRIPLE ROOM</td><td class="n"><b>209,720</b></td><td>10/30 16시까지 무료</td></tr>
-      <tr><td>호텔패스</td><td>SUPERIOR TRIPLE ROOM (다른 공급사, 같은 방)</td><td class="n">214,620</td><td>동일</td></tr>
-      <tr><td>투어비스(국내숙박 전문관)</td><td>슈페리어 트리플</td><td class="n">226,013</td><td>10/29 17시까지 무료</td></tr>
-      <tr><td>호텔패스</td><td>Economy Triple (퀸 1 + 트윈 1)</td><td class="n">276,360</td><td>10/30</td></tr>
-      <tr><td>부킹닷컴(참고, 베네피아 아님)</td><td>수페리어 트윈 3인 (싱글 1 + 대형 더블 1)</td><td class="n">280,000</td><td>11/4</td></tr>
-    </table>
-    <div class="sectit">리뷰 요약</div>
-    <ul>
-      <li>부킹닷컴 7.6(421건) · 트립닷컴 8.2 — 위치 8.8~9.1, 직원 8.9로 높음</li>
-      <li>시설 7.2 — 객실이 작다, 샤워부스·화장실 사이 소음·습기 지적</li>
-      <li>객실이 19~20층이라 DDP 야경이 좋다는 평</li>
-    </ul>
-    <div class="sectit">⚠️ 이름 주의</div>
-    명동역 쪽 '밀리오레 호텔 서울 명동'(3인 약 40.6만)과 여기어때의 '명동 밀리오레호텔'(대실 파는 모텔)은 <b>다른 곳</b>이다. 예약 화면에서 주소가 <b>장충단로 263</b>인지 확인할 것.
-    <div class="route"><div class="sectit">카카오맵 경로</div><a href="img/route_1.jpg" target="_blank"><img src="img/route_1.jpg" alt="밀리오레→레노스블랑쉬 경로"></a></div>
-  </div></details>
-</div>
-
-<!-- 2순위 -->
-<div class="card">
-  <div class="strip">
-    <a href="img/hyd_1.jpg" target="_blank"><img src="img/hyd_1.jpg" alt="현대레지던스 싱글3 트리플"></a>
-    <a href="img/hyd_2.jpg" target="_blank"><img src="img/hyd_2.jpg" alt="현대레지던스 트리플"></a>
-    <a href="img/hyd_3.jpg" target="_blank"><img src="img/hyd_3.jpg" alt="현대레지던스 더블+싱글"></a>
-    <a href="img/hyd_4.jpg" target="_blank"><img src="img/hyd_4.jpg" alt="현대레지던스 프런트"></a>
-    <a href="img/hyd_5.jpg" target="_blank"><img src="img/hyd_5.jpg" alt="현대레지던스 입구"></a>
-  </div>
-  <div class="chead">
-    <div class="top"><span class="rank">2순위</span><span class="name">현대 레지던스 서울</span><span class="price">232,260~<i>원 · 호텔패스</i></span></div>
-    <div class="addr">서울 중구 마른내로12길 7-4 (충무로 현대 프레스타워) · 을지로4가·충무로역 5분</div>
-    <div class="badges">
-      <span class="badge b-ok">카카오 분류: 호텔</span><span class="badge b-ok">여기어때: 레지던스 호텔 · 대실 없음</span>
-      <span class="badge b-info">싱글 3개 트리플 있음</span><span class="badge b-info">즉시확정</span><span class="badge b-warn">24시간 프런트 미확인</span>
-    </div>
-  </div>
-  <div class="taxi">🚕 11/8 06:30 출발 → <b>13분</b> · 4.3km · 약 10,900원</div>
-  <div class="oneliner">처남이 따로 침대를 써야 하면 여기. 싱글 3개 트리플이 있고, 밀리오레보다 3만 원쯤 비싸다.</div>
-  <details><summary>💰 제휴몰별 가격 · 객실</summary><div class="dbody">
-    <table>
-      <tr><th>몰</th><th>객실</th><th class="n">요금</th></tr>
-      <tr><td><b>호텔패스</b></td><td>Deluxe Twin (더블 1 + 트윈 1)</td><td class="n"><b>232,260</b></td></tr>
-      <tr><td>호텔패스</td><td>DELUXE TRIPLE</td><td class="n">239,120</td></tr>
-      <tr><td>호텔패스</td><td>Deluxe Triple — 싱글 3개</td><td class="n">241,080</td></tr>
-      <tr><td>투어비스</td><td>디럭스 트리플</td><td class="n">245,551</td></tr>
-      <tr><td>여기어때(공개, 참고)</td><td>—</td><td class="n">254,000</td></tr>
-    </table>
-    <div class="note" style="margin-top:6px">무료취소: 호텔패스 10/30 16시, 투어비스 10/30 17시까지.</div>
-    <div class="route"><div class="sectit">카카오맵 경로</div><a href="img/route_2.jpg" target="_blank"><img src="img/route_2.jpg" alt="현대레지던스→레노스블랑쉬 경로"></a></div>
-  </div></details>
-</div>
-
-<h2 style="font-size:1rem;margin:16px 2px 8px">30만 원대 대안 (3인 목록가, 상세 객실은 미검증)</h2>
-<div class="mini">
-  <div class="card">
-    <div class="strip"><img src="img/sna_1.jpg" alt=""><img src="img/sna_2.jpg" alt=""><img src="img/sna_3.jpg" alt=""></div>
-    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">서울앤호텔 동대문</span></div>
-      <div class="addr">종로구 종로66가길 21 · 동묘앞역 5분 · 3성</div>
-      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-info">택시 10분</span></div></div>
-    <div class="oneliner">트립토파즈·호텔패스 31.6~31.8만 · 투어비스 33.1만</div>
-  </div>
-  <div class="card">
-    <div class="strip"><img src="img/coz_1.jpg" alt=""><img src="img/coz_2.jpg" alt=""><img src="img/coz_3.jpg" alt=""></div>
-    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">호텔 코지 명동</span></div>
-      <div class="addr">중구 남대문시장길 61 · 3성</div>
-      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-warn">택시 16분</span></div></div>
-    <div class="oneliner">투어비스 29.5만 · 호텔패스 30.1만 · 트립토파즈 30.9만</div>
-  </div>
-  <div class="card">
-    <div class="strip"><img src="img/lum_1.jpg" alt=""><img src="img/lum_2.jpg" alt=""><img src="img/lum_3.jpg" alt=""></div>
-    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">호텔 루미아 명동</span></div>
-      <div class="addr">중구 퇴계로8길 31-9 · 3성 · 2015년 신축</div>
-      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-warn">택시 16분</span></div></div>
-    <div class="oneliner">호텔패스 30.1만 · 웹투어 패밀리트윈(최대3) 30.6만 · 투어비스 31.1만</div>
-  </div>
-  <div class="card">
-    <div class="strip"><img src="img/stc_1.jpg" alt=""><img src="img/stc_2.jpg" alt=""><img src="img/stc_3.jpg" alt=""></div>
-    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">더 스테이 클래식 명동</span></div>
-      <div class="addr">중구 남대문로 27 · 4성 · 2021년 오픈</div>
-      <div class="badges"><span class="badge b-ok">여기어때 베네피아 호텔관 9.5</span><span class="badge b-bad">택시 19분</span></div></div>
-    <div class="oneliner">투어비스 29.1만 · 트립토파즈 29.5만 · 호텔패스 31.4만</div>
-  </div>
-</div>
-
-<div class="panel">
-  <h2>🏪 베네피아 제휴몰 판정</h2>
-  <table>
-    <tr><th>몰</th><th>정체</th><th>판정</th></tr>
-    <tr><td><b>호텔패스</b></td><td>hotelpass.net 베네피아관</td><td class="ok">동일 호텔 최저가 · 3인 검색 · 즉시확정</td></tr>
-    <tr><td>국내숙박 전문관</td><td>투어비스 베네피아관</td><td>재고 가장 넓음, 호텔패스보다 +3~8%</td></tr>
-    <tr><td>트립토파즈</td><td>benepia.triptopaz.com</td><td>투어비스와 같거나 +1~5%</td></tr>
-    <tr><td>여기어때</td><td>베네피아 전용 채널</td><td>서울 호텔 약 70곳뿐, 비쌈</td></tr>
-    <tr><td>웹투어</td><td>benepia.webtour.com</td><td>고급 위주, 목록가 부가세 별도라 착시</td></tr>
-    <tr><td>보군여행사</td><td>benepia.railtel.co.kr</td><td>고급 28곳, 2인실 위주 · 예약접수(미확정) 방식</td></tr>
-    <tr><td>플러스앤</td><td>welfare.plusn.co.kr</td><td class="bad">베네피아 대상 숙박 신규예약 임시 중단</td></tr>
-    <tr><td>샬레·에이치투오 / 떠나요닷컴</td><td>리조트·콘도 / 펜션</td><td>서울 도심 해당 없음</td></tr>
-  </table>
-</div>
-
-<div class="panel">
-  <h2>🚫 걸러낸 곳</h2>
-  <table>
-    <tr><th>숙소</th><th class="n">3인가</th><th>탈락 이유</th></tr>
-    <tr><td>호텔 트리쉐이드 동대문</td><td class="n">195,020</td><td>제휴몰엔 '3성 호텔'로 올라와 있지만 카카오 분류가 <b>여관·모텔</b>이고, 여기어때에서 <b>대실 4시간</b>·21시 체크인으로 판매</td></tr>
-    <tr><td>31페이지 (동대문구)</td><td class="n">166,728</td><td><b>3인 이상 동일 성별만 가능</b>, 체크인 18시</td></tr>
-    <tr><td>호텔 클로이 · 아모렉스 · 컬리넌 등</td><td class="n">—</td><td>모텔 분류 또는 대실 판매, 3인 객실 없음</td></tr>
-    <tr><td>남산 포레스트</td><td class="n">189,526</td><td>게스트하우스형('4인 패밀리 단독실 내부화장실')</td></tr>
-    <tr><td>풀만 이스트폴 · 노보텔 동대문</td><td class="n">418,176~</td><td>11/7은 2인실만 있음</td></tr>
-    <tr><td>중랑구 일대</td><td class="n">326,208~</td><td>3인 가능한 정식 호텔은 라코지스테이(아파트텔)뿐이라 오히려 비쌈</td></tr>
-  </table>
-  <div class="note" style="margin-top:6px">1실 vs 2실: 투어비스에서 성인 1인·2인으로 따로 조회하면 목록가가 같아서, 방을 나누면 거의 정확히 2배(밀리오레 22.6만 → 45.2만). 3인 1실이 압도적으로 쌈.</div>
-</div>
-
-<div class="panel">
-  <h2>✅ 예약 순서 (호텔패스 · 밀리오레)</h2>
-  <ol class="steps">
-    <li>베네피아 → 여행/레저 → 국내숙박 → <b>호텔패스</b> → <b>국내호텔</b> 탭</li>
-    <li>목적지 서울 · 체크인 2026-11-07 · 1박 · 객실 1개 · 성인 3명 → 검색</li>
-    <li>목록의 '도시 내 호텔검색'에 <b>밀리오레</b> → 주소 <b>장충단로 263</b> 확인 → 상세요금보기</li>
-    <li><b>SUPERIOR TRIPLE ROOM 209,720원</b> (즉시확정 · 10/30 16시까지 무료취소) → 즉시예약</li>
-    <li>결제 화면에서 <b>베네피아 포인트 전액 사용</b> 되는지 확인</li>
-    <li>전날 밤: 카카오T로 11/8 06:30 택시 예약 또는 프런트에 콜 요청</li>
-  </ol>
-</div>
-
-<div class="note" style="text-align:center;margin:14px 0 20px">사진: 투어비스(Expedia 이미지)·부킹닷컴 / 가격: 베네피아 제휴몰 2026-09-29 조회 · 이후 변동 가능</div>
-</body>
-</html>
+<div class="note" style="text-align:center;margin:14px 0 22px">베네피아 제휴몰 조회 2026-09-29 · 이후 요금·재고 변동 가능</div>
+<script>
+const cards=[...document.querySelectorAll('.card')];let fT=99,fP=1e9,q='';
+function apply(){let n=0;cards.forEach(c=>{const s=+c.dataset.taxi<=fT&&+c.dataset.p<=fP&&c.dataset.n.includes(q);c.style.display=s?'':'none';if(s)n++});document.getElementById('cnt').textContent=n+'곳'}
+document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-f]').forEach(x=>x.classList.remove('active'));b.classList.add('active');fT=b.dataset.f==='all'?99:+b.dataset.f;apply()});
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const on=!b.classList.contains('active');document.querySelectorAll('[data-p]').forEach(x=>x.classList.remove('active'));if(on){b.classList.add('active');fP=+b.dataset.p}else fP=1e9;apply()});
+document.getElementById('q').oninput=e=>{q=e.target.value.trim();apply()};apply();
+</script>
+</body></html>
