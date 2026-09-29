@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>처가 숙소 룩북</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic','Segoe UI',system-ui,sans-serif;background:#f0f2f5;padding:12px;font-size:14px;color:#1a1a1a;max-width:980px;margin:0 auto}
+h1{font-size:1.3rem;margin:4px 0 4px}
+.sub{font-size:.82rem;color:#666;margin-bottom:12px;line-height:1.6}
+.panel{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1);padding:13px 15px;margin-bottom:12px}
+.panel h2{font-size:1rem;margin-bottom:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:14px;background:#e8f0fe;color:#1a56c4}
+.chip.g{background:#e6f4ea;color:#1e7e34}.chip.r{background:#fdecea;color:#c0392b}.chip.y{background:#fff3cd;color:#856404}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{padding:6px 7px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}
+th{color:#888;font-weight:700;font-size:.74rem;background:#fafbfc}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ok{color:#1e7e34;font-weight:700}.bad{color:#c0392b;font-weight:700}.warn{color:#b26a00;font-weight:700}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1);margin-bottom:14px}
+.strip{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;background:#111}
+.strip a{flex:0 0 auto;scroll-snap-align:start}
+.strip img{height:230px;display:block}
+.chead{padding:12px 15px 6px}
+.top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.rank{font-size:.95rem;font-weight:800;color:#fff;background:#1a1a1a;border-radius:8px;padding:3px 9px}
+.rank.alt{background:#888}
+.name{font-size:1.1rem;font-weight:800}
+.price{margin-left:auto;font-size:1.35rem;font-weight:800}.price i{font-size:.7rem;color:#999;font-style:normal;font-weight:400}
+.addr{font-size:.78rem;color:#777;margin-top:3px}
+.badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.badge{padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.b-ok{background:#d4edda;color:#155724}.b-info{background:#e8f0fe;color:#1a56c4}.b-warn{background:#fff3cd;color:#856404}.b-bad{background:#fdecea;color:#c0392b}
+.taxi{margin:9px 15px 4px;background:#f6f8fa;border-left:3px solid #1a73e8;border-radius:0 7px 7px 0;padding:8px 11px;font-size:.86rem;line-height:1.55}
+.taxi b{color:#1a73e8;font-size:1.05rem}
+.oneliner{margin:8px 15px 4px;font-size:.86rem;line-height:1.55;background:#f6f8fa;border-left:3px solid #34a853;padding:7px 10px;border-radius:0 7px 7px 0;font-weight:600;color:#333}
+details{margin:8px 15px 12px;border:1px solid #e8ebf0;border-radius:9px;overflow:hidden}
+summary{padding:9px 13px;font-weight:700;font-size:.84rem;cursor:pointer;background:#f8f9fb;color:#1a73e8;list-style:none}
+summary::-webkit-details-marker{display:none}
+.dbody{padding:6px 13px 12px;font-size:.82rem;line-height:1.6}
+.dbody ul{padding-left:18px}
+.sectit{font-size:.74rem;font-weight:800;color:#999;margin:10px 0 5px;letter-spacing:.5px}
+.route img{width:100%;border-radius:8px;border:1px solid #e8ebf0;display:block;margin-top:6px}
+.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.mini .strip img{height:150px}
+.note{font-size:.74rem;color:#888;line-height:1.6}
+a.lnk{color:#1a73e8;text-decoration:none}
+ol.steps{padding-left:20px;font-size:.84rem;line-height:1.8}
+@media(max-width:560px){.strip img{height:180px}.price{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+
+<h1>🏨 처가 숙소 룩북 — 2026-11-07(토) 1박</h1>
+<div class="sub">장인·장모·처남 3인 · 11/8(일) <b>07:00까지 레노스블랑쉬</b>(성동구 고산자로 202) 도착 · 베네피아 제휴몰 9곳 비교 · 조사 2026-09-29<br>
+가격은 전부 <b>11/7 1박·성인 3명</b>으로 실제 조회한 값(세금 포함, 조식 불포함). 결제는 베네피아 포인트 전제.</div>
+
+<div class="panel">
+  <h2>한눈에</h2>
+  <div class="chips" style="margin-bottom:9px">
+    <span class="chip g">1순위 밀리오레 서울(동대문) 209,720원 · 택시 11분</span>
+    <span class="chip">2순위 현대 레지던스 232,260원~ · 택시 13분</span>
+    <span class="chip y">호텔패스가 동일 호텔 최저가</span>
+    <span class="chip r">플러스앤 숙박 신규예약 중단</span>
+  </div>
+  <table>
+    <tr><th>호텔</th><th>등급</th><th>3인 객실</th><th class="n">최저가</th><th class="n">택시</th><th>무료취소</th></tr>
+    <tr><td><b>호텔 밀리오레 서울</b> (동대문 DDP)</td><td>2성</td><td>슈페리어 트리플 (더블+싱글)</td><td class="n"><b>209,720</b></td><td class="n">11분</td><td>~10/30 16시</td></tr>
+    <tr><td><b>현대 레지던스 서울</b> (충무로)</td><td>3성</td><td>싱글 3개 트리플 / 더블+트윈</td><td class="n"><b>232,260~</b></td><td class="n">13분</td><td>~10/30 16시</td></tr>
+    <tr><td>서울앤호텔 동대문 (창신동)</td><td>3성</td><td>3인 목록가</td><td class="n">318,000~</td><td class="n">10분</td><td>—</td></tr>
+    <tr><td>호텔 코지 명동</td><td>3성</td><td>3인 목록가</td><td class="n">295,000~</td><td class="n warn">16분</td><td>—</td></tr>
+    <tr><td>호텔 루미아 명동</td><td>3성</td><td>패밀리트윈(최대3)</td><td class="n">301,000~</td><td class="n warn">16분</td><td>—</td></tr>
+    <tr><td>더 스테이 클래식 명동</td><td>4성</td><td>3인 목록가</td><td class="n">291,000~</td><td class="n bad">19분</td><td>—</td></tr>
+  </table>
+  <div class="note" style="margin-top:6px">참고: 처음 보신 소테츠 스프라지르 동대문은 3인 44~49만 원.</div>
+</div>
+
+<div class="panel">
+  <h2>🚕 11/8(일) 06:30 택시 — 식장까지</h2>
+  <table>
+    <tr><th>출발 호텔</th><th class="n">거리</th><th class="n">카카오맵 실측</th><th class="n">택시비</th><th class="n">06:30 출발 시 도착</th></tr>
+    <tr><td>호텔 밀리오레 서울</td><td class="n">3.7km</td><td class="n"><b>11분</b></td><td class="n">약 9,800원</td><td class="n ok">06:41 전후</td></tr>
+    <tr><td>현대 레지던스 서울</td><td class="n">4.3km</td><td class="n"><b>13분</b></td><td class="n">약 10,900원</td><td class="n ok">06:43 전후</td></tr>
+    <tr><td>서울앤호텔 동대문</td><td class="n">3.2km</td><td class="n">10분</td><td class="n">약 9,400원</td><td class="n ok">06:40 전후</td></tr>
+    <tr><td>호텔 코지 / 루미아 명동</td><td class="n">5.8km</td><td class="n">16분</td><td class="n">약 12,600원</td><td class="n warn">06:46 전후</td></tr>
+    <tr><td>더 스테이 클래식 명동</td><td class="n">6.8km</td><td class="n">19분</td><td class="n">약 14,200원</td><td class="n bad">06:49 전후</td></tr>
+  </table>
+  <div class="note" style="margin-top:7px">
+    · 측정: <b>2026-09-29(화) 23시경 카카오맵 자동차 길찾기(실시간 교통)</b>. 카카오맵 웹은 미래 출발시각 지정이 안 되고, 네이버지도는 자동화 브라우저 접근이 막혀 있어 평일 밤 한산한 시간대로 쟀다. 일요일 06:30도 비슷하게 한산한 시간대라 이 값과 큰 차이는 없을 것으로 본다.<br>
+    · 서울 택시 심야할증은 22시~04시라 06:30에는 할증이 없다. 일요일 새벽은 택시 잡기가 쉬운 편이지만, 전날 밤 카카오T 예약이나 프런트 콜을 권한다.<br>
+    · 06:30에 출발하면 07:00까지 여유가 15분 이상 남는다. 명동권은 여유가 줄어 비추천.
+  </div>
+</div>
+
+<!-- 1순위 -->
+<div class="card">
+  <div class="strip">
+    <a href="img/mil_2.jpg" target="_blank"><img src="img/mil_2.jpg" alt="밀리오레 2베드 객실"></a>
+    <a href="img/mil_3.jpg" target="_blank"><img src="img/mil_3.jpg" alt="밀리오레 객실"></a>
+    <a href="img/mil_1.jpg" target="_blank"><img src="img/mil_1.jpg" alt="밀리오레 외관"></a>
+    <a href="img/mil_4.jpg" target="_blank"><img src="img/mil_4.jpg" alt="밀리오레 로비"></a>
+    <a href="img/mil_5.jpg" target="_blank"><img src="img/mil_5.jpg" alt="객실에서 본 DDP"></a>
+    <a href="img/mil_6.jpg" target="_blank"><img src="img/mil_6.jpg" alt="밀리오레 욕실"></a>
+  </div>
+  <div class="chead">
+    <div class="top"><span class="rank">1순위</span><span class="name">호텔 밀리오레 서울</span><span class="price">209,720<i>원 · 호텔패스</i></span></div>
+    <div class="addr">서울 중구 장충단로 263 (동대문 밀리오레 쇼핑몰 건물 · 14층 로비, 19~20층 객실) · 동대문역사문화공원역 14번 출구 · DDP 200m · 64실</div>
+    <div class="badges">
+      <span class="badge b-ok">카카오 분류: 호텔</span><span class="badge b-ok">대실 없음</span><span class="badge b-ok">24시간 프런트</span>
+      <span class="badge b-info">슈페리어 트리플 = 대형 더블 1 + 싱글 1</span><span class="badge b-info">즉시확정</span><span class="badge b-warn">객실 작은 편</span>
+    </div>
+  </div>
+  <div class="taxi">🚕 11/8 06:30 출발 → <b>11분</b> · 3.7km · 약 9,800원 (장충단로 → 퇴계로 → 왕십리로)</div>
+  <div class="oneliner">직접 묵어 본 곳. 작지만 정식 호텔 구성(레스토랑·비즈니스센터·조식 운영)이고, 후보 중 가장 싸면서 식장과도 가깝다.</div>
+  <details open><summary>💰 제휴몰별 가격 · 객실</summary><div class="dbody">
+    <table>
+      <tr><th>몰</th><th>객실</th><th class="n">요금</th><th>취소</th></tr>
+      <tr><td><b>호텔패스</b></td><td>SUPERIOR TRIPLE ROOM</td><td class="n"><b>209,720</b></td><td>10/30 16시까지 무료</td></tr>
+      <tr><td>호텔패스</td><td>SUPERIOR TRIPLE ROOM (다른 공급사, 같은 방)</td><td class="n">214,620</td><td>동일</td></tr>
+      <tr><td>투어비스(국내숙박 전문관)</td><td>슈페리어 트리플</td><td class="n">226,013</td><td>10/29 17시까지 무료</td></tr>
+      <tr><td>호텔패스</td><td>Economy Triple (퀸 1 + 트윈 1)</td><td class="n">276,360</td><td>10/30</td></tr>
+      <tr><td>부킹닷컴(참고, 베네피아 아님)</td><td>수페리어 트윈 3인 (싱글 1 + 대형 더블 1)</td><td class="n">280,000</td><td>11/4</td></tr>
+    </table>
+    <div class="sectit">리뷰 요약</div>
+    <ul>
+      <li>부킹닷컴 7.6(421건) · 트립닷컴 8.2 — 위치 8.8~9.1, 직원 8.9로 높음</li>
+      <li>시설 7.2 — 객실이 작다, 샤워부스·화장실 사이 소음·습기 지적</li>
+      <li>객실이 19~20층이라 DDP 야경이 좋다는 평</li>
+    </ul>
+    <div class="sectit">⚠️ 이름 주의</div>
+    명동역 쪽 '밀리오레 호텔 서울 명동'(3인 약 40.6만)과 여기어때의 '명동 밀리오레호텔'(대실 파는 모텔)은 <b>다른 곳</b>이다. 예약 화면에서 주소가 <b>장충단로 263</b>인지 확인할 것.
+    <div class="route"><div class="sectit">카카오맵 경로</div><a href="img/route_1.jpg" target="_blank"><img src="img/route_1.jpg" alt="밀리오레→레노스블랑쉬 경로"></a></div>
+  </div></details>
+</div>
+
+<!-- 2순위 -->
+<div class="card">
+  <div class="strip">
+    <a href="img/hyd_1.jpg" target="_blank"><img src="img/hyd_1.jpg" alt="현대레지던스 싱글3 트리플"></a>
+    <a href="img/hyd_2.jpg" target="_blank"><img src="img/hyd_2.jpg" alt="현대레지던스 트리플"></a>
+    <a href="img/hyd_3.jpg" target="_blank"><img src="img/hyd_3.jpg" alt="현대레지던스 더블+싱글"></a>
+    <a href="img/hyd_4.jpg" target="_blank"><img src="img/hyd_4.jpg" alt="현대레지던스 프런트"></a>
+    <a href="img/hyd_5.jpg" target="_blank"><img src="img/hyd_5.jpg" alt="현대레지던스 입구"></a>
+  </div>
+  <div class="chead">
+    <div class="top"><span class="rank">2순위</span><span class="name">현대 레지던스 서울</span><span class="price">232,260~<i>원 · 호텔패스</i></span></div>
+    <div class="addr">서울 중구 마른내로12길 7-4 (충무로 현대 프레스타워) · 을지로4가·충무로역 5분</div>
+    <div class="badges">
+      <span class="badge b-ok">카카오 분류: 호텔</span><span class="badge b-ok">여기어때: 레지던스 호텔 · 대실 없음</span>
+      <span class="badge b-info">싱글 3개 트리플 있음</span><span class="badge b-info">즉시확정</span><span class="badge b-warn">24시간 프런트 미확인</span>
+    </div>
+  </div>
+  <div class="taxi">🚕 11/8 06:30 출발 → <b>13분</b> · 4.3km · 약 10,900원</div>
+  <div class="oneliner">처남이 따로 침대를 써야 하면 여기. 싱글 3개 트리플이 있고, 밀리오레보다 3만 원쯤 비싸다.</div>
+  <details><summary>💰 제휴몰별 가격 · 객실</summary><div class="dbody">
+    <table>
+      <tr><th>몰</th><th>객실</th><th class="n">요금</th></tr>
+      <tr><td><b>호텔패스</b></td><td>Deluxe Twin (더블 1 + 트윈 1)</td><td class="n"><b>232,260</b></td></tr>
+      <tr><td>호텔패스</td><td>DELUXE TRIPLE</td><td class="n">239,120</td></tr>
+      <tr><td>호텔패스</td><td>Deluxe Triple — 싱글 3개</td><td class="n">241,080</td></tr>
+      <tr><td>투어비스</td><td>디럭스 트리플</td><td class="n">245,551</td></tr>
+      <tr><td>여기어때(공개, 참고)</td><td>—</td><td class="n">254,000</td></tr>
+    </table>
+    <div class="note" style="margin-top:6px">무료취소: 호텔패스 10/30 16시, 투어비스 10/30 17시까지.</div>
+    <div class="route"><div class="sectit">카카오맵 경로</div><a href="img/route_2.jpg" target="_blank"><img src="img/route_2.jpg" alt="현대레지던스→레노스블랑쉬 경로"></a></div>
+  </div></details>
+</div>
+
+<h2 style="font-size:1rem;margin:16px 2px 8px">30만 원대 대안 (3인 목록가, 상세 객실은 미검증)</h2>
+<div class="mini">
+  <div class="card">
+    <div class="strip"><img src="img/sna_1.jpg" alt=""><img src="img/sna_2.jpg" alt=""><img src="img/sna_3.jpg" alt=""></div>
+    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">서울앤호텔 동대문</span></div>
+      <div class="addr">종로구 종로66가길 21 · 동묘앞역 5분 · 3성</div>
+      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-info">택시 10분</span></div></div>
+    <div class="oneliner">트립토파즈·호텔패스 31.6~31.8만 · 투어비스 33.1만</div>
+  </div>
+  <div class="card">
+    <div class="strip"><img src="img/coz_1.jpg" alt=""><img src="img/coz_2.jpg" alt=""><img src="img/coz_3.jpg" alt=""></div>
+    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">호텔 코지 명동</span></div>
+      <div class="addr">중구 남대문시장길 61 · 3성</div>
+      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-warn">택시 16분</span></div></div>
+    <div class="oneliner">투어비스 29.5만 · 호텔패스 30.1만 · 트립토파즈 30.9만</div>
+  </div>
+  <div class="card">
+    <div class="strip"><img src="img/lum_1.jpg" alt=""><img src="img/lum_2.jpg" alt=""><img src="img/lum_3.jpg" alt=""></div>
+    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">호텔 루미아 명동</span></div>
+      <div class="addr">중구 퇴계로8길 31-9 · 3성 · 2015년 신축</div>
+      <div class="badges"><span class="badge b-ok">카카오: 호텔</span><span class="badge b-warn">택시 16분</span></div></div>
+    <div class="oneliner">호텔패스 30.1만 · 웹투어 패밀리트윈(최대3) 30.6만 · 투어비스 31.1만</div>
+  </div>
+  <div class="card">
+    <div class="strip"><img src="img/stc_1.jpg" alt=""><img src="img/stc_2.jpg" alt=""><img src="img/stc_3.jpg" alt=""></div>
+    <div class="chead"><div class="top"><span class="rank alt">대안</span><span class="name">더 스테이 클래식 명동</span></div>
+      <div class="addr">중구 남대문로 27 · 4성 · 2021년 오픈</div>
+      <div class="badges"><span class="badge b-ok">여기어때 베네피아 호텔관 9.5</span><span class="badge b-bad">택시 19분</span></div></div>
+    <div class="oneliner">투어비스 29.1만 · 트립토파즈 29.5만 · 호텔패스 31.4만</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>🏪 베네피아 제휴몰 판정</h2>
+  <table>
+    <tr><th>몰</th><th>정체</th><th>판정</th></tr>
+    <tr><td><b>호텔패스</b></td><td>hotelpass.net 베네피아관</td><td class="ok">동일 호텔 최저가 · 3인 검색 · 즉시확정</td></tr>
+    <tr><td>국내숙박 전문관</td><td>투어비스 베네피아관</td><td>재고 가장 넓음, 호텔패스보다 +3~8%</td></tr>
+    <tr><td>트립토파즈</td><td>benepia.triptopaz.com</td><td>투어비스와 같거나 +1~5%</td></tr>
+    <tr><td>여기어때</td><td>베네피아 전용 채널</td><td>서울 호텔 약 70곳뿐, 비쌈</td></tr>
+    <tr><td>웹투어</td><td>benepia.webtour.com</td><td>고급 위주, 목록가 부가세 별도라 착시</td></tr>
+    <tr><td>보군여행사</td><td>benepia.railtel.co.kr</td><td>고급 28곳, 2인실 위주 · 예약접수(미확정) 방식</td></tr>
+    <tr><td>플러스앤</td><td>welfare.plusn.co.kr</td><td class="bad">베네피아 대상 숙박 신규예약 임시 중단</td></tr>
+    <tr><td>샬레·에이치투오 / 떠나요닷컴</td><td>리조트·콘도 / 펜션</td><td>서울 도심 해당 없음</td></tr>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>🚫 걸러낸 곳</h2>
+  <table>
+    <tr><th>숙소</th><th class="n">3인가</th><th>탈락 이유</th></tr>
+    <tr><td>호텔 트리쉐이드 동대문</td><td class="n">195,020</td><td>제휴몰엔 '3성 호텔'로 올라와 있지만 카카오 분류가 <b>여관·모텔</b>이고, 여기어때에서 <b>대실 4시간</b>·21시 체크인으로 판매</td></tr>
+    <tr><td>31페이지 (동대문구)</td><td class="n">166,728</td><td><b>3인 이상 동일 성별만 가능</b>, 체크인 18시</td></tr>
+    <tr><td>호텔 클로이 · 아모렉스 · 컬리넌 등</td><td class="n">—</td><td>모텔 분류 또는 대실 판매, 3인 객실 없음</td></tr>
+    <tr><td>남산 포레스트</td><td class="n">189,526</td><td>게스트하우스형('4인 패밀리 단독실 내부화장실')</td></tr>
+    <tr><td>풀만 이스트폴 · 노보텔 동대문</td><td class="n">418,176~</td><td>11/7은 2인실만 있음</td></tr>
+    <tr><td>중랑구 일대</td><td class="n">326,208~</td><td>3인 가능한 정식 호텔은 라코지스테이(아파트텔)뿐이라 오히려 비쌈</td></tr>
+  </table>
+  <div class="note" style="margin-top:6px">1실 vs 2실: 투어비스에서 성인 1인·2인으로 따로 조회하면 목록가가 같아서, 방을 나누면 거의 정확히 2배(밀리오레 22.6만 → 45.2만). 3인 1실이 압도적으로 쌈.</div>
+</div>
+
+<div class="panel">
+  <h2>✅ 예약 순서 (호텔패스 · 밀리오레)</h2>
+  <ol class="steps">
+    <li>베네피아 → 여행/레저 → 국내숙박 → <b>호텔패스</b> → <b>국내호텔</b> 탭</li>
+    <li>목적지 서울 · 체크인 2026-11-07 · 1박 · 객실 1개 · 성인 3명 → 검색</li>
+    <li>목록의 '도시 내 호텔검색'에 <b>밀리오레</b> → 주소 <b>장충단로 263</b> 확인 → 상세요금보기</li>
+    <li><b>SUPERIOR TRIPLE ROOM 209,720원</b> (즉시확정 · 10/30 16시까지 무료취소) → 즉시예약</li>
+    <li>결제 화면에서 <b>베네피아 포인트 전액 사용</b> 되는지 확인</li>
+    <li>전날 밤: 카카오T로 11/8 06:30 택시 예약 또는 프런트에 콜 요청</li>
+  </ol>
+</div>
+
+<div class="note" style="text-align:center;margin:14px 0 20px">사진: 투어비스(Expedia 이미지)·부킹닷컴 / 가격: 베네피아 제휴몰 2026-09-29 조회 · 이후 변동 가능</div>
+</body>
+</html>
